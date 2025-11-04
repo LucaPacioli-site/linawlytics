@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ESP32 Servo Controller</title>
+  <style>
+    body { font-family: Arial; text-align: center; margin-top: 50px; }
+    input[type=range] { width: 300px; }
+  </style>
+</head>
+<body>
+  <h1>ESP32 Servo Control</h1>
+  <input type="range" id="angle" min="0" max="180" value="90" />
+  <p>Angle: <span id="value">90</span>°</p>
+  <button onclick="sendAngle()">Set Servo</button>
+
+  <script>
+    const ESP32_IP = "http://192.168.4.1"; // change to your ESP32 IP
+
+    const angleInput = document.getElementById("angle");
+    const angleValue = document.getElementById("value");
+
+    angleInput.oninput = () => {
+      angleValue.textContent = angleInput.value;
+    };
+
+    function sendAngle() {
+      const angle = angleInput.value;
+      fetch(`${ESP32_IP}/servo?angle=${angle}`)
+        .then(r => r.text())
+        .then(console.log)
+        .catch(console.error);
+    }
+  </script>
+</body>
+</html>
