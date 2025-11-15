@@ -7,8 +7,27 @@
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <style>
-    body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+    body { 
+      margin: 0; 
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
     video { max-width: 100%; height: auto; display: block; }
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
   </style>
 </head>
 <body>
@@ -18,8 +37,8 @@
     const { useState, useEffect } = React;
     const { createRoot } = ReactDOM;
 
-    // Simple Icon component using emojis
-    const Icon = ({ iconName, className = "w-5 h-5" }) => {
+    // Enhanced Icon component with larger sizes
+    const Icon = ({ iconName, className = "w-7 h-7 text-2xl" }) => {
       const icons = {
         Sparkles:'✨', Utensils:'🍽️', Shirt:'👚', Mic:'🎤', Send:'➡️', TrendingUp:'📈', Award:'🏆',
         Share2:'📤', Menu:'☰', X:'❌', Music:'🎶', Plane:'✈️', ShoppingCart:'🛒', MapPin:'📍', CreditCard:'💳',
@@ -36,41 +55,36 @@
       const [cart, setCart] = useState([]);
       const [deliveryAddress, setDeliveryAddress] = useState('');
 
-      // Mock fetch function simulating Claude AI response
       const fetchAIRecommendations = async (section) => {
-        // Show loading first
-        setRecommendations([{ id:0, name:"Loading...", category:"", price:0, image:"https://via.placeholder.com/150" }]);
-
-        // Mock delay
+        setRecommendations([{ id:0, name:"Loading your perfect picks...", category:"", price:0, image:"https://via.placeholder.com/150" }]);
         await new Promise(r => setTimeout(r, 1500));
 
-        // Mock data for each section
         const data = {
           trending: [
-            { id:1, name:"Filipino Streetwear Tee", category:"OOTD", price:650, image:"https://via.placeholder.com/150/FFB6C1/000000?text=OOTD1" },
-            { id:2, name:"Ube Cheese Pandesal", category:"Food", price:180, image:"https://via.placeholder.com/150/FFE4B5/000000?text=Food1" },
-            { id:3, name:"BTS Manila Concert Ticket", category:"Concert", price:5500, image:"https://via.placeholder.com/150/ADD8E6/000000?text=Concert1" },
-            { id:4, name:"El Nido Adventure Package", category:"Travel", price:8999, image:"https://via.placeholder.com/150/98FB98/000000?text=Travel1" },
+            { id:1, name:"Filipino Streetwear Tee", category:"OOTD", price:650, image:"https://via.placeholder.com/200/FFB6C1/000000?text=OOTD1" },
+            { id:2, name:"Ube Cheese Pandesal", category:"Food", price:180, image:"https://via.placeholder.com/200/FFE4B5/000000?text=Food1" },
+            { id:3, name:"BTS Manila Concert Ticket", category:"Concert", price:5500, image:"https://via.placeholder.com/200/ADD8E6/000000?text=Concert1" },
+            { id:4, name:"El Nido Adventure Package", category:"Travel", price:8999, image:"https://via.placeholder.com/200/98FB98/000000?text=Travel1" },
           ],
           ootd: [
-            { id:5, name:"Local Denim Jacket", category:"OOTD", price:1200, image:"https://via.placeholder.com/150/FFB6C1/000000?text=OOTD2" },
-            { id:6, name:"Barong Tagalog Modern", category:"OOTD", price:1800, image:"https://via.placeholder.com/150/FF69B4/000000?text=OOTD3" },
-            { id:7, name:"Filipino Handwoven Bag", category:"OOTD", price:900, image:"https://via.placeholder.com/150/FF1493/000000?text=OOTD4" },
+            { id:5, name:"Local Denim Jacket", category:"OOTD", price:1200, image:"https://via.placeholder.com/200/FFB6C1/000000?text=OOTD2" },
+            { id:6, name:"Barong Tagalog Modern", category:"OOTD", price:1800, image:"https://via.placeholder.com/200/FF69B4/000000?text=OOTD3" },
+            { id:7, name:"Filipino Handwoven Bag", category:"OOTD", price:900, image:"https://via.placeholder.com/200/FF1493/000000?text=OOTD4" },
           ],
           food: [
-            { id:8, name:"Halo-Halo Dessert Set", category:"Food", price:250, image:"https://via.placeholder.com/150/FFE4B5/000000?text=Food2" },
-            { id:9, name:"Adobo Meal Pack", category:"Food", price:350, image:"https://via.placeholder.com/150/FFD700/000000?text=Food3" },
-            { id:10, name:"Sinigang sa Miso", category:"Food", price:400, image:"https://via.placeholder.com/150/FFA500/000000?text=Food4" },
+            { id:8, name:"Halo-Halo Dessert Set", category:"Food", price:250, image:"https://via.placeholder.com/200/FFE4B5/000000?text=Food2" },
+            { id:9, name:"Adobo Meal Pack", category:"Food", price:350, image:"https://via.placeholder.com/200/FFD700/000000?text=Food3" },
+            { id:10, name:"Sinigang sa Miso", category:"Food", price:400, image:"https://via.placeholder.com/200/FFA500/000000?text=Food4" },
           ],
           concert: [
-            { id:11, name:"BLACKPINK Manila Concert", category:"Concert", price:8000, image:"https://via.placeholder.com/150/ADD8E6/000000?text=Concert2" },
-            { id:12, name:"Adele Concert Philippines", category:"Concert", price:9500, image:"https://via.placeholder.com/150/87CEFA/000000?text=Concert3" },
-            { id:13, name:"Ed Sheeran PH Tour", category:"Concert", price:7200, image:"https://via.placeholder.com/150/4682B4/000000?text=Concert4" },
+            { id:11, name:"BLACKPINK Manila Concert", category:"Concert", price:8000, image:"https://via.placeholder.com/200/ADD8E6/000000?text=Concert2" },
+            { id:12, name:"Adele Concert Philippines", category:"Concert", price:9500, image:"https://via.placeholder.com/200/87CEFA/000000?text=Concert3" },
+            { id:13, name:"Ed Sheeran PH Tour", category:"Concert", price:7200, image:"https://via.placeholder.com/200/4682B4/000000?text=Concert4" },
           ],
           travel: [
-            { id:14, name:"Boracay 3D/2N Package", category:"Travel", price:12000, image:"https://via.placeholder.com/150/98FB98/000000?text=Travel2" },
-            { id:15, name:"Chocolate Hills Bohol Trip", category:"Travel", price:4500, image:"https://via.placeholder.com/150/00FA9A/000000?text=Travel3" },
-            { id:16, name:"Cebu Island Hopping", category:"Travel", price:7500, image:"https://via.placeholder.com/150/32CD32/000000?text=Travel4" },
+            { id:14, name:"Boracay 3D/2N Package", category:"Travel", price:12000, image:"https://via.placeholder.com/200/98FB98/000000?text=Travel2" },
+            { id:15, name:"Chocolate Hills Bohol Trip", category:"Travel", price:4500, image:"https://via.placeholder.com/200/00FA9A/000000?text=Travel3" },
+            { id:16, name:"Cebu Island Hopping", category:"Travel", price:7500, image:"https://via.placeholder.com/200/32CD32/000000?text=Travel4" },
           ]
         };
         setRecommendations(data[section] || []);
@@ -94,55 +108,107 @@
 
       return (
         <div className="min-h-screen flex flex-col md:flex-row">
-          {/* Sidebar */}
-          <div className="bg-purple-900 text-white p-6 w-full md:w-64 flex-shrink-0">
-            <h1 className="text-3xl font-bold mb-6 flex items-center space-x-2">
-              <Icon iconName="Sparkles" /> <span>MoodBuy PH</span>
+          {/* Sidebar with Glass Effect */}
+          <div className="gradient-bg text-white p-8 w-full md:w-80 flex-shrink-0 shadow-2xl">
+            <h1 className="text-5xl font-bold mb-10 flex items-center space-x-3">
+              <Icon iconName="Sparkles" className="w-12 h-12 text-4xl" /> 
+              <span className="bg-gradient-to-r from-yellow-200 to-pink-200 bg-clip-text text-transparent">MoodBuy PH</span>
             </h1>
             {showApiInput ? (
-              <div className="space-y-3">
-                <input type="password" placeholder="Enter Claude API Key" value={apiKey} onChange={e=>setApiKey(e.target.value)} className="w-full p-2 rounded text-gray-800"/>
-                <button onClick={()=>setShowApiInput(false)} className="w-full py-2 bg-purple-500 rounded hover:bg-purple-600">Save Key</button>
+              <div className="space-y-5">
+                <p className="text-xl text-purple-100 mb-4">Connect your AI to discover personalized picks ✨</p>
+                <input 
+                  type="password" 
+                  placeholder="Enter Claude API Key" 
+                  value={apiKey} 
+                  onChange={e=>setApiKey(e.target.value)} 
+                  className="w-full p-4 rounded-xl text-gray-800 text-lg shadow-lg focus:ring-4 focus:ring-purple-300 outline-none"
+                />
+                <button 
+                  onClick={()=>setShowApiInput(false)} 
+                  className="w-full py-4 text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl hover:from-pink-600 hover:to-purple-600 shadow-xl transform hover:scale-105 transition"
+                >
+                  Start Shopping 🛍️
+                </button>
               </div>
             ) : (
-              <nav className="space-y-3">
-                {['trending','ootd','food','concert','travel'].map(tab => (
-                  <button key={tab} onClick={()=>setActiveTab(tab)} className={`w-full py-2 px-3 rounded text-left hover:bg-purple-700 ${activeTab===tab ? 'bg-purple-700' : ''}`}>
-                    {tab.toUpperCase()}
+              <nav className="space-y-4">
+                {[
+                  {key: 'trending', label: '🔥 TRENDING', icon: 'TrendingUp'},
+                  {key: 'ootd', label: '👗 OOTD', icon: 'Shirt'},
+                  {key: 'food', label: '🍜 FOOD', icon: 'Utensils'},
+                  {key: 'concert', label: '🎵 CONCERTS', icon: 'Music'},
+                  {key: 'travel', label: '✈️ TRAVEL', icon: 'Plane'}
+                ].map(tab => (
+                  <button 
+                    key={tab.key} 
+                    onClick={()=>setActiveTab(tab.key)} 
+                    className={`w-full py-4 px-5 rounded-xl text-left text-xl font-semibold hover:bg-white hover:bg-opacity-20 transition transform hover:translate-x-2 ${activeTab===tab.key ? 'bg-white bg-opacity-30 shadow-lg' : ''}`}
+                  >
+                    {tab.label}
                   </button>
                 ))}
               </nav>
             )}
           </div>
 
-          {/* Main */}
-          <main className="flex-1 p-4 bg-gray-50">
-            <h2 className="text-3xl font-bold mb-4 text-gray-800">{activeTab.toUpperCase()} Picks</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {recommendations.map(item => (
-                <div key={item.id} className="bg-white rounded-xl shadow p-4 flex flex-col">
-                  <img src={item.image} alt={item.name} className="h-40 w-full object-cover rounded mb-4"/>
-                  <h3 className="text-lg font-bold text-gray-800">{item.name}</h3>
-                  <p className="text-sm text-gray-500">{item.category}</p>
-                  <p className="text-xl font-bold text-green-600 mb-4">₱{item.price}</p>
-                  <button onClick={()=>handleAddCart(item)} className="mt-auto py-2 bg-purple-600 text-white rounded hover:bg-purple-700 flex items-center justify-center space-x-2">
-                    <Icon iconName="ShoppingCart"/> <span>Add to Cart</span>
-                  </button>
-                </div>
-              ))}
-            </div>
+          {/* Main Content with Better Spacing */}
+          <main className="flex-1 p-8 bg-gray-50">
+            <div className="max-w-7xl mx-auto">
+              <h2 className="text-5xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+                {activeTab.toUpperCase()} Picks
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {recommendations.map(item => (
+                  <div key={item.id} className="bg-white rounded-2xl shadow-xl p-6 flex flex-col card-hover">
+                    <img src={item.image} alt={item.name} className="h-48 w-full object-cover rounded-xl mb-5 shadow-md"/>
+                    <h3 className="text-2xl font-bold text-gray-800 mb-2">{item.name}</h3>
+                    <p className="text-lg text-purple-600 font-semibold mb-3">{item.category}</p>
+                    <p className="text-3xl font-bold text-green-600 mb-6">₱{item.price.toLocaleString()}</p>
+                    <button 
+                      onClick={()=>handleAddCart(item)} 
+                      className="mt-auto py-4 text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-700 hover:to-pink-700 shadow-lg flex items-center justify-center space-x-3 transform hover:scale-105 transition"
+                    >
+                      <Icon iconName="ShoppingCart" className="w-6 h-6 text-xl"/> 
+                      <span>Add to Cart</span>
+                    </button>
+                  </div>
+                ))}
+              </div>
 
-            {/* Cart & Checkout */}
-            <div className="mt-8 bg-white p-4 rounded-xl shadow space-y-4">
-              <h3 className="text-2xl font-bold">Cart ({cart.reduce((t,i)=>t+i.quantity,0)} items)</h3>
-              {cart.map(item=>(
-                <div key={item.id} className="flex justify-between border-b py-2">
-                  <span>{item.name} x {item.quantity}</span>
-                  <span>₱{item.price*item.quantity}</span>
+              {/* Cart & Checkout with Enhanced Design */}
+              {cart.length > 0 && (
+                <div className="mt-12 bg-white p-8 rounded-2xl shadow-2xl space-y-6">
+                  <h3 className="text-4xl font-bold text-gray-800 mb-6">
+                    🛒 Your Cart ({cart.reduce((t,i)=>t+i.quantity,0)} items)
+                  </h3>
+                  {cart.map(item=>(
+                    <div key={item.id} className="flex justify-between items-center border-b-2 border-gray-200 py-4">
+                      <span className="text-xl font-semibold text-gray-700">{item.name} <span className="text-purple-600">× {item.quantity}</span></span>
+                      <span className="text-2xl font-bold text-green-600">₱{(item.price*item.quantity).toLocaleString()}</span>
+                    </div>
+                  ))}
+                  <div className="pt-4 border-t-2 border-gray-300">
+                    <div className="flex justify-between items-center mb-6">
+                      <span className="text-2xl font-bold text-gray-800">Total:</span>
+                      <span className="text-4xl font-bold text-green-600">₱{cart.reduce((t,i)=>t+i.price*i.quantity,0).toLocaleString()}</span>
+                    </div>
+                    <input 
+                      type="text" 
+                      placeholder="📍 Enter delivery address" 
+                      value={deliveryAddress} 
+                      onChange={e=>setDeliveryAddress(e.target.value)} 
+                      className="w-full p-4 text-lg border-2 border-purple-300 rounded-xl mb-4 focus:ring-4 focus:ring-purple-300 outline-none"
+                    />
+                    <button 
+                      onClick={handleCheckout} 
+                      className="w-full py-5 text-2xl font-bold bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl hover:from-green-600 hover:to-emerald-700 shadow-xl transform hover:scale-105 transition"
+                    >
+                      Checkout Now 💳
+                    </button>
+                  </div>
                 </div>
-              ))}
-              <input type="text" placeholder="Delivery Address" value={deliveryAddress} onChange={e=>setDeliveryAddress(e.target.value)} className="w-full p-2 border rounded"/>
-              <button onClick={handleCheckout} className="w-full py-2 bg-green-600 text-white rounded hover:bg-green-700">Checkout</button>
+              )}
             </div>
           </main>
         </div>
