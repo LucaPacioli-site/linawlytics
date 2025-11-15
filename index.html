@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>MoodBuy PH Delivery App</title>
+  <title>MoodBuy - Your Mood. Your Life. Instantly.</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
@@ -12,7 +12,6 @@
       font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
-    video { max-width: 100%; height: auto; display: block; }
     .gradient-bg {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
@@ -23,10 +22,15 @@
       transform: translateY(-8px);
       box-shadow: 0 20px 40px rgba(0,0,0,0.2);
     }
-    .glass-effect {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+    .pulse-animation {
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    .mood-input-glow {
+      box-shadow: 0 0 20px rgba(167, 139, 250, 0.5);
     }
   </style>
 </head>
@@ -37,54 +41,101 @@
     const { useState, useEffect } = React;
     const { createRoot } = ReactDOM;
 
-    // Enhanced Icon component with larger sizes
     const Icon = ({ iconName, className = "w-7 h-7 text-2xl" }) => {
       const icons = {
-        Sparkles:'✨', Utensils:'🍽️', Shirt:'👚', Mic:'🎤', Send:'➡️', TrendingUp:'📈', Award:'🏆',
-        Share2:'📤', Menu:'☰', X:'❌', Music:'🎶', Plane:'✈️', ShoppingCart:'🛒', MapPin:'📍', CreditCard:'💳',
-        Clock:'⌚', Star:'⭐', Camera:'📷'
+        Sparkles:'✨', Utensils:'🍽️', Shirt:'👚', Mic:'🎤', Send:'➡️', TrendingUp:'📈', 
+        Award:'🏆', Share2:'📤', Menu:'☰', X:'❌', Music:'🎵', Plane:'✈️', 
+        ShoppingCart:'🛒', MapPin:'📍', CreditCard:'💳', Clock:'⌚', Star:'⭐', 
+        Camera:'📷', Heart:'❤️', Fire:'🔥', Zap:'⚡'
       };
       return <span className={`inline-block ${className}`}>{icons[iconName] || ''}</span>;
     };
 
-    const MoodBuyPH = () => {
-      const [activeTab, setActiveTab] = useState('trending');
-      const [apiKey, setApiKey] = useState('');
-      const [showApiInput, setShowApiInput] = useState(true);
+    const MoodBuy = () => {
+      const [activeTab, setActiveTab] = useState('mood');
+      const [moodInput, setMoodInput] = useState('');
+      const [isListening, setIsListening] = useState(false);
       const [recommendations, setRecommendations] = useState([]);
       const [cart, setCart] = useState([]);
       const [deliveryAddress, setDeliveryAddress] = useState('');
+      const [userStreak, setUserStreak] = useState(7);
+      const [userPoints, setUserPoints] = useState(350);
+      const [moodBoost, setMoodBoost] = useState('');
+
+      const analyzeMood = async (input) => {
+        if(!input.trim()) return;
+        
+        // Simulate AI analyzing mood
+        await new Promise(r => setTimeout(r, 1000));
+        
+        const mood = input.toLowerCase();
+        let category = 'cravings';
+        let boost = '';
+        
+        if(mood.includes('outfit') || mood.includes('dress') || mood.includes('wear') || mood.includes('ootd') || mood.includes('party') || mood.includes('style')) {
+          category = 'ootd';
+          boost = '💫 Style Tip: Confidence comes from within! Stand tall and own your look. You got this! ✨';
+        } else if(mood.includes('travel') || mood.includes('trip') || mood.includes('vacation') || mood.includes('beach') || mood.includes('adventure')) {
+          category = 'travel';
+          boost = '🌟 Adventure Awaits: Life is about collecting moments, not things. Go explore! 🗺️';
+        } else if(mood.includes('concert') || mood.includes('music') || mood.includes('show') || mood.includes('event') || mood.includes('gig')) {
+          category = 'concerts';
+          boost = '🎸 Live Your Best Life: Music is the soundtrack to your memories. Make tonight unforgettable! 🎶';
+        } else {
+          boost = '😊 Mood Boost: Treat yourself! You deserve something delicious today. Food is love! 🍜';
+        }
+        
+        setMoodBoost(boost);
+        setActiveTab(category);
+        setUserPoints(prev => prev + 10);
+        fetchAIRecommendations(category);
+      };
+
+      const startVoiceInput = () => {
+        setIsListening(true);
+        // Simulate voice input
+        setTimeout(() => {
+          const voiceInputs = [
+            "I'm craving something sweet and fun",
+            "I need an outfit for tonight's party",
+            "Show me beach destinations",
+            "Any good concerts this month?"
+          ];
+          const randomInput = voiceInputs[Math.floor(Math.random() * voiceInputs.length)];
+          setMoodInput(randomInput);
+          setIsListening(false);
+          analyzeMood(randomInput);
+        }, 2000);
+      };
 
       const fetchAIRecommendations = async (section) => {
-        setRecommendations([{ id:0, name:"Loading your perfect picks...", category:"", price:0, image:"https://via.placeholder.com/150" }]);
-        await new Promise(r => setTimeout(r, 1500));
+        setRecommendations([{ id:0, name:"AI is analyzing your vibe...", category:"", price:0, image:"https://via.placeholder.com/200/A78BFA/ffffff?text=✨" }]);
+        await new Promise(r => setTimeout(r, 1200));
 
         const data = {
-          trending: [
-            { id:1, name:"Filipino Streetwear Tee", category:"OOTD", price:650, image:"https://via.placeholder.com/200/FFB6C1/000000?text=OOTD1" },
-            { id:2, name:"Ube Cheese Pandesal", category:"Food", price:180, image:"https://via.placeholder.com/200/FFE4B5/000000?text=Food1" },
-            { id:3, name:"BTS Manila Concert Ticket", category:"Concert", price:5500, image:"https://via.placeholder.com/200/ADD8E6/000000?text=Concert1" },
-            { id:4, name:"El Nido Adventure Package", category:"Travel", price:8999, image:"https://via.placeholder.com/200/98FB98/000000?text=Travel1" },
+          cravings: [
+            { id:1, name:"Ube Cheese Pandesal Combo", category:"Sweet Cravings", price:180, trend:"🔥 Trending", image:"https://via.placeholder.com/200/FFE4B5/000000?text=Ube+Pandesal" },
+            { id:2, name:"Mood Boost Halo-Halo", category:"Dessert", price:250, trend:"⭐ Popular", image:"https://via.placeholder.com/200/FFB6C1/000000?text=Halo-Halo" },
+            { id:3, name:"Adobo Comfort Meal", category:"Hearty Meal", price:350, trend:"❤️ Comfort Food", image:"https://via.placeholder.com/200/FFD700/000000?text=Adobo" },
+            { id:4, name:"Sinigang Soul Bowl", category:"Warm & Cozy", price:400, trend:"🍜 Best Seller", image:"https://via.placeholder.com/200/FFA500/000000?text=Sinigang" },
           ],
           ootd: [
-            { id:5, name:"Local Denim Jacket", category:"OOTD", price:1200, image:"https://via.placeholder.com/200/FFB6C1/000000?text=OOTD2" },
-            { id:6, name:"Barong Tagalog Modern", category:"OOTD", price:1800, image:"https://via.placeholder.com/200/FF69B4/000000?text=OOTD3" },
-            { id:7, name:"Filipino Handwoven Bag", category:"OOTD", price:900, image:"https://via.placeholder.com/200/FF1493/000000?text=OOTD4" },
-          ],
-          food: [
-            { id:8, name:"Halo-Halo Dessert Set", category:"Food", price:250, image:"https://via.placeholder.com/200/FFE4B5/000000?text=Food2" },
-            { id:9, name:"Adobo Meal Pack", category:"Food", price:350, image:"https://via.placeholder.com/200/FFD700/000000?text=Food3" },
-            { id:10, name:"Sinigang sa Miso", category:"Food", price:400, image:"https://via.placeholder.com/200/FFA500/000000?text=Food4" },
-          ],
-          concert: [
-            { id:11, name:"BLACKPINK Manila Concert", category:"Concert", price:8000, image:"https://via.placeholder.com/200/ADD8E6/000000?text=Concert2" },
-            { id:12, name:"Adele Concert Philippines", category:"Concert", price:9500, image:"https://via.placeholder.com/200/87CEFA/000000?text=Concert3" },
-            { id:13, name:"Ed Sheeran PH Tour", category:"Concert", price:7200, image:"https://via.placeholder.com/200/4682B4/000000?text=Concert4" },
+            { id:5, name:"Filipino Streetwear Set", category:"Casual Cool", price:1200, trend:"🔥 Trending", image:"https://via.placeholder.com/200/FFB6C1/000000?text=Streetwear" },
+            { id:6, name:"Modern Barong Collection", category:"Formal Chic", price:1800, trend:"✨ Premium", image:"https://via.placeholder.com/200/FF69B4/000000?text=Barong" },
+            { id:7, name:"Party Night Outfit", category:"Night Out", price:1500, trend:"🎉 Hot Pick", image:"https://via.placeholder.com/200/FF1493/000000?text=Party+Fit" },
+            { id:8, name:"Handwoven Accessories", category:"Local Style", price:900, trend:"💚 Sustainable", image:"https://via.placeholder.com/200/DDA0DD/000000?text=Accessories" },
           ],
           travel: [
-            { id:14, name:"Boracay 3D/2N Package", category:"Travel", price:12000, image:"https://via.placeholder.com/200/98FB98/000000?text=Travel2" },
-            { id:15, name:"Chocolate Hills Bohol Trip", category:"Travel", price:4500, image:"https://via.placeholder.com/200/00FA9A/000000?text=Travel3" },
-            { id:16, name:"Cebu Island Hopping", category:"Travel", price:7500, image:"https://via.placeholder.com/200/32CD32/000000?text=Travel4" },
+            { id:14, name:"Boracay Paradise 3D/2N", category:"Beach Escape", price:12000, trend:"🏖️ Most Booked", image:"https://via.placeholder.com/200/98FB98/000000?text=Boracay" },
+            { id:15, name:"Chocolate Hills Adventure", category:"Nature Trip", price:4500, trend:"🌄 Adventure", image:"https://via.placeholder.com/200/00FA9A/000000?text=Bohol" },
+            { id:16, name:"Cebu Island Hopping", category:"Water Sports", price:7500, trend:"🏄 Active", image:"https://via.placeholder.com/200/32CD32/000000?text=Cebu" },
+            { id:17, name:"El Nido Ultimate Package", category:"Luxury Getaway", price:15000, trend:"⭐ Premium", image:"https://via.placeholder.com/200/90EE90/000000?text=El+Nido" },
+          ],
+          concerts: [
+            { id:11, name:"BLACKPINK Manila Show", category:"K-Pop Concert", price:8000, trend:"🔥 Sold Out Soon", image:"https://via.placeholder.com/200/FFB6D9/000000?text=BLACKPINK" },
+            { id:12, name:"Ed Sheeran PH Tour", category:"Pop Concert", price:7200, trend:"🎸 Limited Seats", image:"https://via.placeholder.com/200/87CEFA/000000?text=Ed+Sheeran" },
+            { id:13, name:"Taylor Swift Eras Tour", category:"Pop Superstar", price:12000, trend:"✨ VIP Available", image:"https://via.placeholder.com/200/DDA0DD/000000?text=Taylor+Swift" },
+            { id:18, name:"Local Indie Music Fest", category:"Festival", price:1500, trend:"🎵 This Weekend", image:"https://via.placeholder.com/200/ADD8E6/000000?text=Indie+Fest" },
           ]
         };
         setRecommendations(data[section] || []);
@@ -96,88 +147,182 @@
           if(existing) return prev.map(i => i.id===item.id ? {...i, quantity:i.quantity+1} : i);
           return [...prev, {...item, quantity:1}];
         });
+        setUserPoints(prev => prev + 5);
       };
 
       const handleCheckout = () => {
         if(!deliveryAddress){ alert("Please enter delivery address."); return; }
-        alert(`Order placed! ${cart.length} items. Total: ₱${cart.reduce((t,i)=>t+i.price*i.quantity,0)}. Shipping to: ${deliveryAddress}`);
-        setCart([]); setDeliveryAddress('');
+        alert(`🎉 Order placed! ${cart.length} items. Total: ₱${cart.reduce((t,i)=>t+i.price*i.quantity,0).toLocaleString()}. Shipping to: ${deliveryAddress}\n\n+50 points earned! 🏆`);
+        setCart([]); 
+        setDeliveryAddress('');
+        setUserPoints(prev => prev + 50);
       };
 
-      useEffect(() => { if(!showApiInput && activeTab) fetchAIRecommendations(activeTab); }, [activeTab, showApiInput]);
+      const shareToSocial = (item) => {
+        alert(`📱 Sharing "${item.name}" to social media! #MoodBuy #${item.category.replace(/\s+/g, '')}`);
+        setUserPoints(prev => prev + 15);
+      };
+
+      useEffect(() => { 
+        if(activeTab !== 'mood') fetchAIRecommendations(activeTab); 
+      }, [activeTab]);
 
       return (
         <div className="min-h-screen flex flex-col md:flex-row">
-          {/* Sidebar with Glass Effect */}
+          {/* Sidebar */}
           <div className="gradient-bg text-white p-8 w-full md:w-80 flex-shrink-0 shadow-2xl">
-            <h1 className="text-5xl font-bold mb-10 flex items-center space-x-3">
+            <h1 className="text-5xl font-bold mb-3 flex items-center space-x-3">
               <Icon iconName="Sparkles" className="w-12 h-12 text-4xl" /> 
-              <span className="bg-gradient-to-r from-yellow-200 to-pink-200 bg-clip-text text-transparent">MoodBuy PH</span>
+              <span className="bg-gradient-to-r from-yellow-200 to-pink-200 bg-clip-text text-transparent">MoodBuy</span>
             </h1>
-            {showApiInput ? (
-              <div className="space-y-5">
-                <p className="text-xl text-purple-100 mb-4">Connect your AI to discover personalized picks ✨</p>
-                <input 
-                  type="password" 
-                  placeholder="Enter Claude API Key" 
-                  value={apiKey} 
-                  onChange={e=>setApiKey(e.target.value)} 
-                  className="w-full p-4 rounded-xl text-gray-800 text-lg shadow-lg focus:ring-4 focus:ring-purple-300 outline-none"
-                />
-                <button 
-                  onClick={()=>setShowApiInput(false)} 
-                  className="w-full py-4 text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl hover:from-pink-600 hover:to-purple-600 shadow-xl transform hover:scale-105 transition"
-                >
-                  Start Shopping 🛍️
-                </button>
+            <p className="text-xl text-purple-100 mb-8 italic">"Your Mood. Your Life. Instantly."</p>
+            
+            {/* User Stats */}
+            <div className="bg-white bg-opacity-20 rounded-xl p-4 mb-6 backdrop-blur-sm">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-lg">🔥 Streak</span>
+                <span className="text-2xl font-bold">{userStreak} days</span>
               </div>
-            ) : (
-              <nav className="space-y-4">
-                {[
-                  {key: 'trending', label: '🔥 TRENDING', icon: 'TrendingUp'},
-                  {key: 'ootd', label: '👗 OOTD', icon: 'Shirt'},
-                  {key: 'food', label: '🍜 FOOD', icon: 'Utensils'},
-                  {key: 'concert', label: '🎵 CONCERTS', icon: 'Music'},
-                  {key: 'travel', label: '✈️ TRAVEL', icon: 'Plane'}
-                ].map(tab => (
-                  <button 
-                    key={tab.key} 
-                    onClick={()=>setActiveTab(tab.key)} 
-                    className={`w-full py-4 px-5 rounded-xl text-left text-xl font-semibold hover:bg-white hover:bg-opacity-20 transition transform hover:translate-x-2 ${activeTab===tab.key ? 'bg-white bg-opacity-30 shadow-lg' : ''}`}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </nav>
+              <div className="flex justify-between items-center">
+                <span className="text-lg">⭐ Points</span>
+                <span className="text-2xl font-bold">{userPoints}</span>
+              </div>
+            </div>
+
+            <nav className="space-y-4">
+              {[
+                {key: 'mood', label: '💭 Mood Input', icon: 'Heart'},
+                {key: 'cravings', label: '🍜 Cravings', icon: 'Utensils'},
+                {key: 'ootd', label: '👗 OOTD', icon: 'Shirt'},
+                {key: 'travel', label: '✈️ Travel', icon: 'Plane'},
+                {key: 'concerts', label: '🎵 Concerts', icon: 'Music'}
+              ].map(tab => (
+                <button 
+                  key={tab.key} 
+                  onClick={()=>setActiveTab(tab.key)} 
+                  className={`w-full py-4 px-5 rounded-xl text-left text-xl font-semibold hover:bg-white hover:bg-opacity-20 transition transform hover:translate-x-2 ${activeTab===tab.key ? 'bg-white bg-opacity-30 shadow-lg' : ''}`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </nav>
+
+            {/* Cart Preview */}
+            {cart.length > 0 && (
+              <div className="mt-6 bg-green-500 bg-opacity-30 rounded-xl p-4 backdrop-blur-sm">
+                <p className="text-xl font-bold mb-2">🛒 Cart: {cart.reduce((t,i)=>t+i.quantity,0)} items</p>
+                <p className="text-2xl font-bold">₱{cart.reduce((t,i)=>t+i.price*i.quantity,0).toLocaleString()}</p>
+              </div>
             )}
           </div>
 
-          {/* Main Content with Better Spacing */}
+          {/* Main Content */}
           <main className="flex-1 p-8 bg-gray-50">
             <div className="max-w-7xl mx-auto">
-              <h2 className="text-5xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
-                {activeTab.toUpperCase()} Picks
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {recommendations.map(item => (
-                  <div key={item.id} className="bg-white rounded-2xl shadow-xl p-6 flex flex-col card-hover">
-                    <img src={item.image} alt={item.name} className="h-48 w-full object-cover rounded-xl mb-5 shadow-md"/>
-                    <h3 className="text-2xl font-bold text-gray-800 mb-2">{item.name}</h3>
-                    <p className="text-lg text-purple-600 font-semibold mb-3">{item.category}</p>
-                    <p className="text-3xl font-bold text-green-600 mb-6">₱{item.price.toLocaleString()}</p>
-                    <button 
-                      onClick={()=>handleAddCart(item)} 
-                      className="mt-auto py-4 text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-700 hover:to-pink-700 shadow-lg flex items-center justify-center space-x-3 transform hover:scale-105 transition"
-                    >
-                      <Icon iconName="ShoppingCart" className="w-6 h-6 text-xl"/> 
-                      <span>Add to Cart</span>
-                    </button>
+              {activeTab === 'mood' ? (
+                <div className="space-y-8">
+                  <h2 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-6">
+                    How are you feeling today? 💭
+                  </h2>
+                  
+                  {/* Mood Input */}
+                  <div className="bg-white rounded-2xl shadow-2xl p-8 mood-input-glow">
+                    <label className="text-2xl font-bold text-gray-800 mb-4 block">Tell us your mood 🎯</label>
+                    <textarea 
+                      value={moodInput}
+                      onChange={(e) => setMoodInput(e.target.value)}
+                      placeholder="Type your mood... 'I'm craving something sweet' or 'Need outfit for party tonight'"
+                      className="w-full p-5 text-xl border-2 border-purple-300 rounded-xl mb-4 focus:ring-4 focus:ring-purple-300 outline-none h-32"
+                    />
+                    <div className="flex space-x-4">
+                      <button 
+                        onClick={() => analyzeMood(moodInput)}
+                        className="flex-1 py-5 text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-700 hover:to-pink-700 shadow-lg transform hover:scale-105 transition flex items-center justify-center space-x-3"
+                      >
+                        <Icon iconName="Send" /> <span>Get Recommendations</span>
+                      </button>
+                      <button 
+                        onClick={startVoiceInput}
+                        disabled={isListening}
+                        className={`py-5 px-8 text-xl font-bold bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 shadow-lg transform hover:scale-105 transition ${isListening ? 'pulse-animation' : ''}`}
+                      >
+                        <Icon iconName="Mic" className={isListening ? 'pulse-animation' : ''} />
+                      </button>
+                    </div>
+                    {isListening && <p className="text-xl text-purple-600 mt-4 font-semibold">🎤 Listening...</p>}
                   </div>
-                ))}
-              </div>
 
-              {/* Cart & Checkout with Enhanced Design */}
-              {cart.length > 0 && (
+                  {/* MoodBoost */}
+                  {moodBoost && (
+                    <div className="bg-gradient-to-r from-yellow-100 to-pink-100 rounded-2xl p-6 shadow-xl">
+                      <p className="text-2xl font-bold text-gray-800">{moodBoost}</p>
+                    </div>
+                  )}
+
+                  {/* Quick Mood Buttons */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {[
+                      {emoji: '😋', text: 'Hungry', query: 'Im hungry and want food'},
+                      {emoji: '🎉', text: 'Party Ready', query: 'Need outfit for party tonight'},
+                      {emoji: '🏖️', text: 'Need Vacation', query: 'Show me beach destinations'},
+                      {emoji: '🎵', text: 'Concert Vibes', query: 'Any good concerts this month'}
+                    ].map((mood, i) => (
+                      <button
+                        key={i}
+                        onClick={() => { setMoodInput(mood.query); analyzeMood(mood.query); }}
+                        className="bg-white rounded-xl p-6 shadow-lg hover:shadow-2xl transform hover:scale-105 transition"
+                      >
+                        <div className="text-5xl mb-3">{mood.emoji}</div>
+                        <div className="text-xl font-bold text-gray-800">{mood.text}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <h2 className="text-5xl font-bold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+                    {activeTab === 'cravings' ? '🍜 Food Recommendations' : 
+                     activeTab === 'ootd' ? '👗 Outfit Picks' :
+                     activeTab === 'travel' ? '✈️ Travel Destinations' :
+                     '🎵 Concert Events'}
+                  </h2>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {recommendations.map(item => (
+                      <div key={item.id} className="bg-white rounded-2xl shadow-xl p-6 flex flex-col card-hover relative overflow-hidden">
+                        {item.trend && (
+                          <div className="absolute top-4 right-4 bg-gradient-to-r from-orange-400 to-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                            {item.trend}
+                          </div>
+                        )}
+                        <img src={item.image} alt={item.name} className="h-48 w-full object-cover rounded-xl mb-5 shadow-md"/>
+                        <h3 className="text-2xl font-bold text-gray-800 mb-2">{item.name}</h3>
+                        <p className="text-lg text-purple-600 font-semibold mb-3">{item.category}</p>
+                        <p className="text-3xl font-bold text-green-600 mb-6">₱{item.price.toLocaleString()}</p>
+                        <div className="mt-auto space-y-3">
+                          <button 
+                            onClick={()=>handleAddCart(item)} 
+                            className="w-full py-4 text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-700 hover:to-pink-700 shadow-lg flex items-center justify-center space-x-3 transform hover:scale-105 transition"
+                          >
+                            <Icon iconName="ShoppingCart" className="w-6 h-6 text-xl"/> 
+                            <span>Add to Cart</span>
+                          </button>
+                          <button 
+                            onClick={()=>shareToSocial(item)}
+                            className="w-full py-3 text-base font-semibold bg-gradient-to-r from-blue-400 to-indigo-500 text-white rounded-xl hover:from-blue-500 hover:to-indigo-600 shadow-md flex items-center justify-center space-x-2"
+                          >
+                            <Icon iconName="Share2" className="w-5 h-5"/> 
+                            <span>Share (+15 pts)</span>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {/* Cart & Checkout */}
+              {cart.length > 0 && activeTab !== 'mood' && (
                 <div className="mt-12 bg-white p-8 rounded-2xl shadow-2xl space-y-6">
                   <h3 className="text-4xl font-bold text-gray-800 mb-6">
                     🛒 Your Cart ({cart.reduce((t,i)=>t+i.quantity,0)} items)
@@ -204,7 +349,7 @@
                       onClick={handleCheckout} 
                       className="w-full py-5 text-2xl font-bold bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl hover:from-green-600 hover:to-emerald-700 shadow-xl transform hover:scale-105 transition"
                     >
-                      Checkout Now 💳
+                      Checkout Now 💳 (+50 pts)
                     </button>
                   </div>
                 </div>
@@ -216,7 +361,7 @@
     };
 
     const root = createRoot(document.getElementById('root'));
-    root.render(<MoodBuyPH />);
+    root.render(<MoodBuy />);
   </script>
 </body>
 </html>
