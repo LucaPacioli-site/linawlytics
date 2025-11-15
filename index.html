@@ -3,67 +3,64 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MoodBuy – Realistic Current Data</title>
+  <title>MoodBuy – Your Mood, Your Life</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
-<body class="bg-gradient-to-br from-purple-600 to-indigo-700 text-white min-h-screen">
+<body class="bg-gradient-to-br from-purple-600 via-indigo-700 to-purple-800 text-white min-h-screen">
   <div id="root"></div>
   <script type="text/babel">
-    const { useState, useEffect } = React;
+    const { useState, useEffect, useMemo } = React;
 
-    // Realistic data based on public announcements / curated list
     const data = {
       concerts: [
-        // Concerts from Nov 16 2025 onwards, based on public sources
-        { id: 1, artist: "Hatsune Miku", event: "MIKU EXPO 2025", venue: "SM Mall of Asia Arena, Pasay", date: "Nov 16, 2025" },
-        { id: 2, artist: "David Archuleta / Vanessa Carlton / Blue", event: "Playback Pop It Up!", venue: "SM Mall of Asia Arena", date: "Nov 21, 2025" },
-        { id: 3, artist: "Dionela", event: "The Grace Tour", venue: "New Frontier Theater", date: "Nov 21–22, 2025" },
-        { id: 4, artist: "Jason Derulo", event: "Live in Manila", venue: "SM Mall of Asia Arena", date: "Nov 22, 2025" },
-        { id: 5, artist: "BLACKPINK", event: "DEADLINE World Tour", venue: "Philippine Arena, Bulacan", date: "Nov 22–23, 2025" },
-        { id: 6, artist: "Jeremy Zucker", event: "Garden State Tour", venue: "New Frontier Theater, QC", date: "Nov 29, 2025" },
-        { id: 7, artist: "BINI", event: "BINIFIED Year-End Party", venue: "Philippine Arena", date: "Nov 29, 2025" },
-        { id: 8, artist: "Tyla", event: "We Wanna Party Asia Tour", venue: "SM Mall of Asia Arena", date: "Dec 3, 2025" },
-        { id: 9, artist: "Doja Cat", event: "Ma Vie World Tour", venue: "SM Mall of Asia Arena", date: "Dec 7, 2025" },
-        { id: 10, artist: "Rich Brian", event: "Where Is My Head? Tour", venue: "New Frontier Theater", date: "Dec 8, 2025" },
-        { id: 11, artist: "Michael Learns to Rock", event: "Encore – All The Hits", venue: "SM MOA Arena", date: "Nov 18, 2025" },
-        { id: 12, artist: "SEVENTEEN", event: "NEW_ World Tour", venue: "Philippine Sports Stadium", date: "Mar 21, 2026" },
-        { id: 13, artist: "SB19", event: "Simula at Wakas Tour", venue: "Philippine Arena", date: "2025" }, // based on their world tour :contentReference[oaicite:2]{index=2}
-        // You can add more as needed, from Billboard Philippines list :contentReference[oaicite:3]{index=3}
+        { id: 1, artist: "Hatsune Miku", event: "MIKU EXPO 2025", venue: "SM Mall of Asia Arena, Pasay", date: "Nov 16, 2025", price: "₱3,500 - ₱8,000" },
+        { id: 2, artist: "David Archuleta / Vanessa Carlton / Blue", event: "Playback Pop It Up!", venue: "SM Mall of Asia Arena", date: "Nov 21, 2025", price: "₱2,500 - ₱6,000" },
+        { id: 3, artist: "Dionela", event: "The Grace Tour", venue: "New Frontier Theater", date: "Nov 21–22, 2025", price: "₱1,500 - ₱4,000" },
+        { id: 4, artist: "Jason Derulo", event: "Live in Manila", venue: "SM Mall of Asia Arena", date: "Nov 22, 2025", price: "₱3,000 - ₱10,000" },
+        { id: 5, artist: "BLACKPINK", event: "DEADLINE World Tour", venue: "Philippine Arena, Bulacan", date: "Nov 22–23, 2025", price: "₱5,000 - ₱25,000" },
+        { id: 6, artist: "Jeremy Zucker", event: "Garden State Tour", venue: "New Frontier Theater, QC", date: "Nov 29, 2025", price: "₱2,000 - ₱5,000" },
+        { id: 7, artist: "BINI", event: "BINIFIED Year-End Party", venue: "Philippine Arena", date: "Nov 29, 2025", price: "₱2,500 - ₱8,000" },
+        { id: 8, artist: "Tyla", event: "We Wanna Party Asia Tour", venue: "SM Mall of Asia Arena", date: "Dec 3, 2025", price: "₱2,800 - ₱7,500" },
+        { id: 9, artist: "Doja Cat", event: "Ma Vie World Tour", venue: "SM Mall of Asia Arena", date: "Dec 7, 2025", price: "₱4,000 - ₱12,000" },
+        { id: 10, artist: "Rich Brian", event: "Where Is My Head? Tour", venue: "New Frontier Theater", date: "Dec 8, 2025", price: "₱2,200 - ₱5,500" },
+        { id: 11, artist: "Michael Learns to Rock", event: "Encore – All The Hits", venue: "SM MOA Arena", date: "Nov 18, 2025", price: "₱2,500 - ₱7,000" },
+        { id: 12, artist: "SEVENTEEN", event: "NEW_ World Tour", venue: "Philippine Sports Stadium", date: "Mar 21, 2026", price: "₱4,500 - ₱15,000" },
+        { id: 13, artist: "SB19", event: "Simula at Wakas Tour", venue: "Philippine Arena", date: "2025", price: "₱2,000 - ₱6,500" },
       ],
 
       food: [
-        "Jollibee", "Mang Inasal", "Chowking", "Max’s Restaurant", "McDonald’s Philippines",
-        "KFC Philippines", "Greenwich Pizza", "Shakey’s Philippines", "Yellow Cab Pizza",
-        "Andok’s Lechon Manok", "Red Ribbon Bakeshop", "Tropical Hut", "Army Navy",
-        "Bigg’s Diner", "Tapa King", "Gerry’s Grill", "Cabalen", "Fish & Co.",
-        "Buffalo Wild Wings (PH)", "Texas Roadhouse (PH)", "Bulgogi Brothers", "Italianni’s",
+        "Jollibee", "Mang Inasal", "Chowking", "Max's Restaurant", "McDonald's Philippines",
+        "KFC Philippines", "Greenwich Pizza", "Shakey's Philippines", "Yellow Cab Pizza",
+        "Andok's Lechon Manok", "Red Ribbon Bakeshop", "Tropical Hut", "Army Navy",
+        "Bigg's Diner", "Tapa King", "Gerry's Grill", "Cabalen", "Fish & Co.",
+        "Buffalo Wild Wings (PH)", "Texas Roadhouse (PH)", "Bulgogi Brothers", "Italianni's",
         "Hard Rock Cafe (PH)", "Modern Shanghai", "Tomatito", "Las Flores", "Buffet 101 (PH)",
         "Kenny Rogers Roasters Philippines", "Pancake House Philippines", "Tokyo Tokyo",
-        "Mang Larry’s Isawan", "Conti’s Bakeshop", "Bo’s Coffee", "Figaro Coffee Company",
-        "Gino’s Pizza", "Red Lobster (PH)", "Manam", "Sarsa Kitchen + Bar", "Black Scoop Café",
+        "Mang Larry's Isawan", "Conti's Bakeshop", "Bo's Coffee", "Figaro Coffee Company",
+        "Gino's Pizza", "Red Lobster (PH)", "Manam", "Sarsa Kitchen + Bar", "Black Scoop Café",
         "Army Navy Burrito", "7‑Eleven (food kiosk)", "Goldilocks Bakeshop", "Tropical Hut Drive‑Thru",
-        "Racks", "Rico’s Lechon", "Casa Verde", "Max’s Corner Bakery", "Mister Donut Philippines",
-        "Sbarro (PH)", "Denny’s Philippines", "Pizza Hut Philippines", "Burger King Philippines",
+        "Racks", "Rico's Lechon", "Casa Verde", "Max's Corner Bakery", "Mister Donut Philippines",
+        "Sbarro (PH)", "Denny's Philippines", "Pizza Hut Philippines", "Burger King Philippines",
         "Waffle Time (PH)", "Dampa", "Tapa Ni Lola", "Mesa Filipino Moderne"
       ],
 
       fashion: {
         perfume: [
           "Bench Body Cologne", "Penshoppe Signature Scent", "Mahogany Air Cologne",
-          "Now and Beyond Perfume", "Silka Scented Lotion", "Victoria’s Secret Bombshell (PH)",
+          "Now and Beyond Perfume", "Silka Scented Lotion", "Victoria's Secret Bombshell (PH)",
           "Paris Hilton Perfume PH", "Calvin Klein Euphoria", "Elizabeth Arden Green Tea", "Armani Acqua Di Gio"
         ],
         pants: [
-          "Levi’s", "Uniqlo", "Penshoppe", "Bench", "Giordano", "Wrangler", "Lee", "Diesel",
+          "Levi's", "Uniqlo", "Penshoppe", "Bench", "Giordano", "Wrangler", "Lee", "Diesel",
           "Guess", "Zara", "H&M", "Mango", "Dockers", "G‑Star RAW", "Gap", "Old Navy"
         ],
         shirts: [
           "Uniqlo Shirt", "H&M Shirt", "Penshoppe Shirt", "Bench Tee", "Giordano Polo", "Zara Shirt",
           "Mango Top", "Ralph Lauren Polo", "Tommy Hilfiger Shirt", "Calvin Klein Shirt",
-          "Levi’s Denim Shirt", "Gap Oxford", "Uniqlo U Shirt", "Bershka Shirt", "Cotton On Tee", "Topman Shirt"
+          "Levi's Denim Shirt", "Gap Oxford", "Uniqlo U Shirt", "Bershka Shirt", "Cotton On Tee", "Topman Shirt"
         ],
         accessories: [
           "Fossil Watch", "Casio Watch", "Michael Kors Bag", "Kate Spade Bag", "Ray‑Ban Sunglasses",
@@ -72,7 +69,6 @@
       },
 
       travel: [
-        // A curated list of popular Philippine & international destinations
         "Boracay, Aklan", "El Nido, Palawan", "Coron, Palawan", "Banaue Rice Terraces, Ifugao",
         "Vigan, Ilocos Sur", "Intramuros, Manila", "Mount Pulag, Benguet", "Chocolate Hills, Bohol",
         "Cebu City, Cebu", "Siargao, Surigao del Norte", "Batanes", "Sagada, Mountain Province",
@@ -82,105 +78,189 @@
         "Pagsanjan Falls, Laguna", "Apo Island, Negros Oriental", "Bicol Region (Sorsogon)", "Baler, Aurora",
         "Subic, Zambales", "Corregidor, Cavite", "Siquijor Island", "Kalanggaman Island, Leyte",
         "Malapascua Island, Cebu", "Camotes Islands, Cebu", "Palaui Island, Cagayan", "Marinduque", "Romblon Province",
-        "Tubbataha Reefs, Palawan", "Cuyo Islands, Palawan", "Balabac Islands, Palawan", "El Nido Lagoons",
-        "Port Barton, Palawan", "Bolinao, Pangasinan", "Anilao, Batangas", "Donsol, Sorsogon",
-        "Puerto Galera, Oriental Mindoro", "Leyte (Kalanggaman)", "Bohol Countryside Tour", "Banaue / Batad Terraces",
-        "Mayon View Spots", "Palawan Eco Spots", "Tawi‑Tawi", "Basco, Batanes", "Sabtang, Batanes",
-        "Itbayat, Batanes", "Tuguegarao, Cagayan", "Calaguas Islands, Camarines Norte", "Manila Bay Sunset",
-        "Zambales Beach Hopping", "Mindoro (Apo Reef)", "Bulacan Historical Sites", "Ilocos Norte (Pagudpud)",
-        "Ilocos Sur (Vigan)", "Abra (Tangadan Falls)", "Benguet (Strawberry Fields)",
-        "Nueva Ecija (Minalungao)", "Quezon (Cagbalete Island)", "Quezon (Lucban, Pahiyas)", "Pampanga (Mt. Arayat)",
-        "Isabela (Callang Falls)", "Sorsogon (Donsol Whalesharks)", "Palawan (Culion)", "Palawan (Roxas / Taytay)",
-        "Siargao Surf Spots", "Camiguin Mantigue", "Lake Sebu, South Cotabato", "Mount Apo, Davao", "Butuan Historical",
-        // International
         "Tokyo, Japan", "Seoul, South Korea", "Bangkok, Thailand", "Paris, France", "London, UK",
         "New York, USA", "Los Angeles, USA", "Sydney, Australia", "Bali, Indonesia", "Dubai, UAE",
-        "Singapore", "Rome, Italy", "Barcelona, Spain", "Amsterdam, Netherlands", "Vancouver, Canada",
-        "Toronto, Canada", "Hong Kong, China", "Taipei, Taiwan", "Kyoto, Japan", "Prague, Czech Republic",
-        "Santorini, Greece", "Lisbon, Portugal", "Cape Town, South Africa", "Rio de Janeiro, Brazil",
-        "Madrid, Spain", "Berlin, Germany", "Kuala Lumpur, Malaysia", "Istanbul, Turkey", "Zurich, Switzerland",
-        "Maldives", "Hawaii, USA", "Queenstown, New Zealand", "Machu Picchu, Peru", "Great Barrier Reef, Australia",
-        "Venice, Italy", "Florence, Italy", "Phuket, Thailand", "Siem Reap, Cambodia", "Angkor Wat, Cambodia"
+        "Singapore", "Rome, Italy", "Barcelona, Spain", "Amsterdam, Netherlands", "Maldives"
       ]
     };
+
+    const TABS = [
+      { id: "concerts", label: "Concerts", icon: "🎵" },
+      { id: "food", label: "Food", icon: "🍔" },
+      { id: "perfume", label: "Perfume", icon: "💐" },
+      { id: "pants", label: "Pants", icon: "👖" },
+      { id: "shirts", label: "Shirts", icon: "👕" },
+      { id: "accessories", label: "Accessories", icon: "⌚" },
+      { id: "travel", label: "Travel", icon: "✈️" }
+    ];
 
     const App = () => {
       const [apiKey, setApiKey] = useState("");
       const [loggedIn, setLoggedIn] = useState(false);
       const [tab, setTab] = useState("concerts");
-      const [items, setItems] = useState([]);
+      const [searchQuery, setSearchQuery] = useState("");
 
-      useEffect(() => {
-        if (!loggedIn) return;
+      const items = useMemo(() => {
+        if (!loggedIn) return [];
+        
+        let rawItems;
         switch(tab) {
-          case "concerts": setItems(data.concerts); break;
-          case "food": setItems(data.food); break;
-          case "perfume": setItems(data.fashion.perfume); break;
-          case "pants": setItems(data.fashion.pants); break;
-          case "shirts": setItems(data.fashion.shirts); break;
-          case "accessories": setItems(data.fashion.accessories); break;
-          case "travel": setItems(data.travel); break;
+          case "concerts": rawItems = data.concerts; break;
+          case "food": rawItems = data.food; break;
+          case "perfume": rawItems = data.fashion.perfume; break;
+          case "pants": rawItems = data.fashion.pants; break;
+          case "shirts": rawItems = data.fashion.shirts; break;
+          case "accessories": rawItems = data.fashion.accessories; break;
+          case "travel": rawItems = data.travel; break;
+          default: rawItems = [];
         }
-      }, [tab, loggedIn]);
+
+        if (!searchQuery.trim()) return rawItems;
+
+        const query = searchQuery.toLowerCase();
+        return rawItems.filter(item => {
+          if (typeof item === 'string') {
+            return item.toLowerCase().includes(query);
+          }
+          return item.artist?.toLowerCase().includes(query) || 
+                 item.event?.toLowerCase().includes(query) ||
+                 item.venue?.toLowerCase().includes(query);
+        });
+      }, [tab, loggedIn, searchQuery]);
+
+      const handleLogin = () => {
+        if (apiKey.trim()) {
+          setLoggedIn(true);
+        } else {
+          alert("Please enter a valid API key.");
+        }
+      };
+
+      const handleLogout = () => {
+        setLoggedIn(false);
+        setApiKey("");
+        setSearchQuery("");
+      };
 
       if (!loggedIn) {
         return (
           <div className="flex flex-col items-center justify-center min-h-screen p-4">
-            <h1 className="text-4xl font-bold mb-6">MoodBuy Login</h1>
-            <input
-              type="text"
-              placeholder="Enter API Key"
-              value={apiKey}
-              onChange={e => setApiKey(e.target.value)}
-              className="px-4 py-2 rounded text-black w-80 mb-4"
-            />
-            <button
-              onClick={() => {
-                if (apiKey.trim()) setLoggedIn(true);
-                else alert("Please enter a valid API key.");
-              }}
-              className="px-6 py-2 bg-yellow-400 rounded font-bold text-black"
-            >
-              Start
-            </button>
+            <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl max-w-md w-full">
+              <div className="text-center mb-8">
+                <h1 className="text-5xl font-bold mb-2 bg-gradient-to-r from-yellow-300 to-pink-300 bg-clip-text text-transparent">
+                  MoodBuy
+                </h1>
+                <p className="text-gray-200 text-lg">Your Mood, Your Life</p>
+              </div>
+              
+              <input
+                type="password"
+                placeholder="Enter API Key"
+                value={apiKey}
+                onChange={e => setApiKey(e.target.value)}
+                onKeyPress={e => e.key === 'Enter' && handleLogin()}
+                className="w-full px-4 py-3 rounded-lg text-black bg-white bg-opacity-90 mb-4 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition"
+              />
+              
+              <button
+                onClick={handleLogin}
+                className="w-full px-6 py-3 bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 rounded-lg font-bold text-black transition transform hover:scale-105 shadow-lg"
+              >
+                Start Exploring
+              </button>
+            </div>
           </div>
         );
       }
 
       return (
-        <div className="p-8">
-          <h1 className="text-4xl font-bold mb-6">MoodBuy – Your Mood, Your Life</h1>
-          <div className="flex flex-wrap gap-2 mb-6">
-            {["concerts","food","perfume","pants","shirts","accessories","travel"].map(t => (
-              <button
-                key={t}
-                onClick={()=>setTab(t)}
-                className={`px-4 py-2 rounded ${tab === t ? "bg-yellow-400 text-black" : "bg-indigo-500"}`}
-              >
-                {t.charAt(0).toUpperCase() + t.slice(1)}
-              </button>
-            ))}
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {items.map((item, idx) => (
-              <div key={idx} className="bg-white bg-opacity-20 rounded-lg p-4 flex flex-col items-center">
-                <img
-                  src={`https://picsum.photos/seed/${encodeURIComponent(item.id || item)}/300/200`}
-                  alt={item.artist || item}
-                  className="rounded mb-2"
-                />
-                {tab === "concerts" ? (
-                  <div className="text-center">
-                    <h2 className="text-xl font-bold">{item.artist}</h2>
-                    <p>{item.event}</p>
-                    <p className="italic">{item.venue} — {item.date}</p>
-                  </div>
-                ) : (
-                  <p className="text-lg text-center">{item}</p>
-                )}
+        <div className="min-h-screen p-4 md:p-8">
+          <div className="max-w-7xl mx-auto">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+              <div>
+                <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-yellow-300 to-pink-300 bg-clip-text text-transparent">
+                  MoodBuy
+                </h1>
+                <p className="text-gray-200 mt-1">Discover what matches your mood</p>
               </div>
-            ))}
+              
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg transition text-sm font-medium"
+              >
+                Logout
+              </button>
+            </div>
+
+            {/* Search Bar */}
+            <div className="mb-6">
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="w-full md:w-96 px-4 py-3 rounded-lg text-black bg-white bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition"
+              />
+            </div>
+
+            {/* Tabs */}
+            <div className="flex flex-wrap gap-2 mb-8">
+              {TABS.map(t => (
+                <button
+                  key={t.id}
+                  onClick={() => {
+                    setTab(t.id);
+                    setSearchQuery("");
+                  }}
+                  className={`px-4 py-2 rounded-lg font-medium transition transform hover:scale-105 ${
+                    tab === t.id 
+                      ? "bg-gradient-to-r from-yellow-400 to-yellow-500 text-black shadow-lg" 
+                      : "bg-white bg-opacity-20 hover:bg-opacity-30"
+                  }`}
+                >
+                  <span className="mr-2">{t.icon}</span>
+                  {t.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Content Grid */}
+            {items.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-xl text-gray-300">No results found</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {items.map((item, idx) => (
+                  <div 
+                    key={idx} 
+                    className="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl overflow-hidden hover:bg-opacity-20 transition transform hover:scale-105 hover:shadow-2xl"
+                  >
+                    <img
+                      src={`https://picsum.photos/seed/${encodeURIComponent(item.id || item)}/400/250`}
+                      alt={item.artist || item}
+                      className="w-full h-48 object-cover"
+                      loading="lazy"
+                    />
+                    
+                    <div className="p-4">
+                      {tab === "concerts" ? (
+                        <>
+                          <h2 className="text-xl font-bold mb-1">{item.artist}</h2>
+                          <p className="text-yellow-300 font-medium text-sm mb-2">{item.event}</p>
+                          <p className="text-gray-200 text-sm mb-1">{item.venue}</p>
+                          <p className="text-gray-300 text-sm mb-2">{item.date}</p>
+                          <p className="text-green-300 font-semibold text-sm">{item.price}</p>
+                        </>
+                      ) : (
+                        <p className="text-lg font-medium text-center">{item}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       );
