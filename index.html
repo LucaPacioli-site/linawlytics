@@ -1,230 +1,192 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>MoodBuy - Your Mood. Your Life. Instantly.</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MoodBuy – Realistic Current Data</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-  <style>
-    body { 
-      margin: 0; 
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-    .gradient-bg {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-    .card-hover {
-      transition: all 0.3s ease;
-    }
-    .card-hover:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-    }
-    .pulse-animation {
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.7; }
-    }
-    .mood-input-glow {
-      box-shadow: 0 0 20px rgba(167, 139, 250, 0.5);
-    }
-    .ai-message {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 20px;
-      border-radius: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    }
-    .typing-indicator {
-      display: inline-flex;
-      align-items: center;
-    }
-    .typing-indicator span {
-      height: 8px;
-      width: 8px;
-      background: white;
-      border-radius: 50%;
-      display: inline-block;
-      margin: 0 2px;
-      animation: typing 1.4s infinite;
-    }
-    .typing-indicator span:nth-child(2) {
-      animation-delay: 0.2s;
-    }
-    .typing-indicator span:nth-child(3) {
-      animation-delay: 0.4s;
-    }
-    @keyframes typing {
-      0%, 60%, 100% { transform: translateY(0); }
-      30% { transform: translateY(-10px); }
-    }
-  </style>
 </head>
-<body>
+<body class="bg-gradient-to-br from-purple-600 to-indigo-700 text-white min-h-screen">
   <div id="root"></div>
-
   <script type="text/babel">
     const { useState, useEffect } = React;
-    const { createRoot } = ReactDOM;
 
-    const Icon = ({ iconName, className = "w-7 h-7 text-2xl" }) => {
-      const icons = {
-        Sparkles:'✨', Utensils:'🍽️', Shirt:'👚', Mic:'🎤', Send:'➡️', TrendingUp:'📈', 
-        Award:'🏆', Share2:'📤', Menu:'☰', X:'❌', Music:'🎵', Plane:'✈️', 
-        ShoppingCart:'🛒', MapPin:'📍', CreditCard:'💳', Clock:'⌚', Star:'⭐', 
-        Camera:'📷', Heart:'❤️', Fire:'🔥', Zap:'⚡', Brain:'🧠'
-      };
-      return <span className={`inline-block ${className}`}>{icons[iconName] || ''}</span>;
+    // Realistic data based on public announcements / curated list
+    const data = {
+      concerts: [
+        // Concerts from Nov 16 2025 onwards, based on public sources
+        { id: 1, artist: "Hatsune Miku", event: "MIKU EXPO 2025", venue: "SM Mall of Asia Arena, Pasay", date: "Nov 16, 2025" },
+        { id: 2, artist: "David Archuleta / Vanessa Carlton / Blue", event: "Playback Pop It Up!", venue: "SM Mall of Asia Arena", date: "Nov 21, 2025" },
+        { id: 3, artist: "Dionela", event: "The Grace Tour", venue: "New Frontier Theater", date: "Nov 21–22, 2025" },
+        { id: 4, artist: "Jason Derulo", event: "Live in Manila", venue: "SM Mall of Asia Arena", date: "Nov 22, 2025" },
+        { id: 5, artist: "BLACKPINK", event: "DEADLINE World Tour", venue: "Philippine Arena, Bulacan", date: "Nov 22–23, 2025" },
+        { id: 6, artist: "Jeremy Zucker", event: "Garden State Tour", venue: "New Frontier Theater, QC", date: "Nov 29, 2025" },
+        { id: 7, artist: "BINI", event: "BINIFIED Year-End Party", venue: "Philippine Arena", date: "Nov 29, 2025" },
+        { id: 8, artist: "Tyla", event: "We Wanna Party Asia Tour", venue: "SM Mall of Asia Arena", date: "Dec 3, 2025" },
+        { id: 9, artist: "Doja Cat", event: "Ma Vie World Tour", venue: "SM Mall of Asia Arena", date: "Dec 7, 2025" },
+        { id: 10, artist: "Rich Brian", event: "Where Is My Head? Tour", venue: "New Frontier Theater", date: "Dec 8, 2025" },
+        { id: 11, artist: "Michael Learns to Rock", event: "Encore – All The Hits", venue: "SM MOA Arena", date: "Nov 18, 2025" },
+        { id: 12, artist: "SEVENTEEN", event: "NEW_ World Tour", venue: "Philippine Sports Stadium", date: "Mar 21, 2026" },
+        { id: 13, artist: "SB19", event: "Simula at Wakas Tour", venue: "Philippine Arena", date: "2025" }, // based on their world tour :contentReference[oaicite:2]{index=2}
+        // You can add more as needed, from Billboard Philippines list :contentReference[oaicite:3]{index=3}
+      ],
+
+      food: [
+        "Jollibee", "Mang Inasal", "Chowking", "Max’s Restaurant", "McDonald’s Philippines",
+        "KFC Philippines", "Greenwich Pizza", "Shakey’s Philippines", "Yellow Cab Pizza",
+        "Andok’s Lechon Manok", "Red Ribbon Bakeshop", "Tropical Hut", "Army Navy",
+        "Bigg’s Diner", "Tapa King", "Gerry’s Grill", "Cabalen", "Fish & Co.",
+        "Buffalo Wild Wings (PH)", "Texas Roadhouse (PH)", "Bulgogi Brothers", "Italianni’s",
+        "Hard Rock Cafe (PH)", "Modern Shanghai", "Tomatito", "Las Flores", "Buffet 101 (PH)",
+        "Kenny Rogers Roasters Philippines", "Pancake House Philippines", "Tokyo Tokyo",
+        "Mang Larry’s Isawan", "Conti’s Bakeshop", "Bo’s Coffee", "Figaro Coffee Company",
+        "Gino’s Pizza", "Red Lobster (PH)", "Manam", "Sarsa Kitchen + Bar", "Black Scoop Café",
+        "Army Navy Burrito", "7‑Eleven (food kiosk)", "Goldilocks Bakeshop", "Tropical Hut Drive‑Thru",
+        "Racks", "Rico’s Lechon", "Casa Verde", "Max’s Corner Bakery", "Mister Donut Philippines",
+        "Sbarro (PH)", "Denny’s Philippines", "Pizza Hut Philippines", "Burger King Philippines",
+        "Waffle Time (PH)", "Dampa", "Tapa Ni Lola", "Mesa Filipino Moderne"
+      ],
+
+      fashion: {
+        perfume: [
+          "Bench Body Cologne", "Penshoppe Signature Scent", "Mahogany Air Cologne",
+          "Now and Beyond Perfume", "Silka Scented Lotion", "Victoria’s Secret Bombshell (PH)",
+          "Paris Hilton Perfume PH", "Calvin Klein Euphoria", "Elizabeth Arden Green Tea", "Armani Acqua Di Gio"
+        ],
+        pants: [
+          "Levi’s", "Uniqlo", "Penshoppe", "Bench", "Giordano", "Wrangler", "Lee", "Diesel",
+          "Guess", "Zara", "H&M", "Mango", "Dockers", "G‑Star RAW", "Gap", "Old Navy"
+        ],
+        shirts: [
+          "Uniqlo Shirt", "H&M Shirt", "Penshoppe Shirt", "Bench Tee", "Giordano Polo", "Zara Shirt",
+          "Mango Top", "Ralph Lauren Polo", "Tommy Hilfiger Shirt", "Calvin Klein Shirt",
+          "Levi’s Denim Shirt", "Gap Oxford", "Uniqlo U Shirt", "Bershka Shirt", "Cotton On Tee", "Topman Shirt"
+        ],
+        accessories: [
+          "Fossil Watch", "Casio Watch", "Michael Kors Bag", "Kate Spade Bag", "Ray‑Ban Sunglasses",
+          "GUESS Belt", "Tory Burch Wallet", "Charles & Keith Handbag", "Swatch Watch", "Timex Watch"
+        ]
+      },
+
+      travel: [
+        // A curated list of popular Philippine & international destinations
+        "Boracay, Aklan", "El Nido, Palawan", "Coron, Palawan", "Banaue Rice Terraces, Ifugao",
+        "Vigan, Ilocos Sur", "Intramuros, Manila", "Mount Pulag, Benguet", "Chocolate Hills, Bohol",
+        "Cebu City, Cebu", "Siargao, Surigao del Norte", "Batanes", "Sagada, Mountain Province",
+        "Tagaytay, Cavite", "Taal Volcano, Batangas", "Pampanga (Angeles)", "Puerto Princesa, Palawan",
+        "Underground River, Palawan", "Panglao, Bohol", "Hundred Islands, Pangasinan", "Camiguin",
+        "Baguio City, Benguet", "Davao City, Davao del Sur", "Mount Mayon, Albay", "Caramoan, Camarines Sur",
+        "Pagsanjan Falls, Laguna", "Apo Island, Negros Oriental", "Bicol Region (Sorsogon)", "Baler, Aurora",
+        "Subic, Zambales", "Corregidor, Cavite", "Siquijor Island", "Kalanggaman Island, Leyte",
+        "Malapascua Island, Cebu", "Camotes Islands, Cebu", "Palaui Island, Cagayan", "Marinduque", "Romblon Province",
+        "Tubbataha Reefs, Palawan", "Cuyo Islands, Palawan", "Balabac Islands, Palawan", "El Nido Lagoons",
+        "Port Barton, Palawan", "Bolinao, Pangasinan", "Anilao, Batangas", "Donsol, Sorsogon",
+        "Puerto Galera, Oriental Mindoro", "Leyte (Kalanggaman)", "Bohol Countryside Tour", "Banaue / Batad Terraces",
+        "Mayon View Spots", "Palawan Eco Spots", "Tawi‑Tawi", "Basco, Batanes", "Sabtang, Batanes",
+        "Itbayat, Batanes", "Tuguegarao, Cagayan", "Calaguas Islands, Camarines Norte", "Manila Bay Sunset",
+        "Zambales Beach Hopping", "Mindoro (Apo Reef)", "Bulacan Historical Sites", "Ilocos Norte (Pagudpud)",
+        "Ilocos Sur (Vigan)", "Abra (Tangadan Falls)", "Benguet (Strawberry Fields)",
+        "Nueva Ecija (Minalungao)", "Quezon (Cagbalete Island)", "Quezon (Lucban, Pahiyas)", "Pampanga (Mt. Arayat)",
+        "Isabela (Callang Falls)", "Sorsogon (Donsol Whalesharks)", "Palawan (Culion)", "Palawan (Roxas / Taytay)",
+        "Siargao Surf Spots", "Camiguin Mantigue", "Lake Sebu, South Cotabato", "Mount Apo, Davao", "Butuan Historical",
+        // International
+        "Tokyo, Japan", "Seoul, South Korea", "Bangkok, Thailand", "Paris, France", "London, UK",
+        "New York, USA", "Los Angeles, USA", "Sydney, Australia", "Bali, Indonesia", "Dubai, UAE",
+        "Singapore", "Rome, Italy", "Barcelona, Spain", "Amsterdam, Netherlands", "Vancouver, Canada",
+        "Toronto, Canada", "Hong Kong, China", "Taipei, Taiwan", "Kyoto, Japan", "Prague, Czech Republic",
+        "Santorini, Greece", "Lisbon, Portugal", "Cape Town, South Africa", "Rio de Janeiro, Brazil",
+        "Madrid, Spain", "Berlin, Germany", "Kuala Lumpur, Malaysia", "Istanbul, Turkey", "Zurich, Switzerland",
+        "Maldives", "Hawaii, USA", "Queenstown, New Zealand", "Machu Picchu, Peru", "Great Barrier Reef, Australia",
+        "Venice, Italy", "Florence, Italy", "Phuket, Thailand", "Siem Reap, Cambodia", "Angkor Wat, Cambodia"
+      ]
     };
 
-    const MoodBuy = () => {
-      const [activeTab, setActiveTab] = useState('cravings');
-      const [moodInput, setMoodInput] = useState('');
-      const [isListening, setIsListening] = useState(false);
-      const [recommendations, setRecommendations] = useState([]);
-      const [cart, setCart] = useState([]);
-      const [deliveryAddress, setDeliveryAddress] = useState('');
-      const [userStreak, setUserStreak] = useState(7);
-      const [userPoints, setUserPoints] = useState(350);
-      const [aiAdvice, setAiAdvice] = useState('');
-      const [isAiTyping, setIsAiTyping] = useState(false);
+    const App = () => {
+      const [apiKey, setApiKey] = useState("");
+      const [loggedIn, setLoggedIn] = useState(false);
+      const [tab, setTab] = useState("concerts");
+      const [items, setItems] = useState([]);
 
-      const getRealTimeData = (category) => {
-        const data = {
-          cravings: {
-            items: [
-              { id:1, name:"Jollibee Chickenjoy Bucket", restaurant:"Jollibee", category:"Fast Food", price:599, deliveryTime:"25-35 min", rating:4.8, image:"https://via.placeholder.com/250/FFD700/000000?text=Chickenjoy", delivery:"Grab/Foodpanda" },
-              { id:2, name:"Army Navy Burrito", restaurant:"Army Navy", category:"Mexican", price:285, deliveryTime:"30-40 min", rating:4.6, image:"https://via.placeholder.com/250/FF6347/ffffff?text=Burrito", delivery:"Grab/Foodpanda" },
-              { id:3, name:"Mang Inasal Pork BBQ Meal", restaurant:"Mang Inasal", category:"Filipino", price:159, deliveryTime:"20-30 min", rating:4.7, image:"https://via.placeholder.com/250/FFA500/000000?text=BBQ", delivery:"Grab/Foodpanda" },
-              { id:4, name:"Yellow Cab 4 Cheese Pizza", restaurant:"Yellow Cab", category:"Pizza", price:649, deliveryTime:"35-45 min", rating:4.5, image:"https://via.placeholder.com/250/FFD700/000000?text=Pizza", delivery:"Grab/Foodpanda" },
-              { id:5, name:"Tim Ho Wan Pork Bun", restaurant:"Tim Ho Wan", category:"Dimsum", price:180, deliveryTime:"40-50 min", rating:4.9, image:"https://via.placeholder.com/250/FF69B4/000000?text=Dimsum", delivery:"Grab/Foodpanda" },
-            ]
-          },
-          ootd: {
-            items: [
-              { id:6, name:"Uniqlo AIRism Tee", store:"Uniqlo SM Megamall", category:"Casual Wear", price:590, availability:"In Stock", rating:4.8, image:"https://via.placeholder.com/250/87CEEB/000000?text=Uniqlo+Tee", delivery:"Lazada/Shopee" },
-              { id:7, name:"H&M Summer Dress", store:"H&M Greenbelt", category:"Dress", price:1299, availability:"In Stock", rating:4.6, image:"https://via.placeholder.com/250/FFB6C1/000000?text=H&M+Dress", delivery:"Lazada/Shopee" },
-              { id:8, name:"Nike Air Force 1", store:"Nike BGC", category:"Sneakers", price:5295, availability:"Limited Stock", rating:4.9, image:"https://via.placeholder.com/250/000000/ffffff?text=Nike+AF1", delivery:"Zalora" },
-              { id:9, name:"Penshoppe Denim Jacket", store:"Penshoppe SM North", category:"Outerwear", price:1299, availability:"In Stock", rating:4.5, image:"https://via.placeholder.com/250/4169E1/ffffff?text=Denim", delivery:"Lazada/Shopee" },
-            ]
-          },
-          travel: {
-            items: [
-              { id:10, name:"Boracay White Beach Resort", provider:"Klook", category:"Beach Resort", price:8500, duration:"3D/2N", rating:4.8, image:"https://via.placeholder.com/250/00CED1/ffffff?text=Boracay", booking:"Klook/Agoda" },
-              { id:11, name:"Baguio Strawberry Farm Tour", provider:"Traveloka", category:"Nature Trip", price:2500, duration:"2D/1N", rating:4.6, image:"https://via.placeholder.com/250/228B22/ffffff?text=Baguio", booking:"Traveloka" },
-              { id:12, name:"Siargao Surfing Package", provider:"Klook", category:"Adventure", price:12000, duration:"4D/3N", rating:4.9, image:"https://via.placeholder.com/250/1E90FF/ffffff?text=Siargao", booking:"Klook" },
-              { id:13, name:"Tagaytay Day Tour", provider:"Guide to the Philippines", category:"Quick Getaway", price:1800, duration:"Day Tour", rating:4.5, image:"https://via.placeholder.com/250/8B4513/ffffff?text=Tagaytay", booking:"Local Tours" },
-            ]
-          },
-          concerts: {
-            items: [
-              { id:14, name:"Taylor Swift: The Eras Tour", venue:"Philippine Arena", category:"Pop Concert", price:15000, date:"Feb 2025", rating:5.0, image:"https://via.placeholder.com/250/DDA0DD/000000?text=Taylor+Swift", booking:"TicketNet" },
-              { id:15, name:"Coldplay Music of the Spheres", venue:"MOA Arena", category:"Rock Concert", price:12000, date:"Jan 2025", rating:4.9, image:"https://via.placeholder.com/250/FFD700/000000?text=Coldplay", booking:"SM Tickets" },
-              { id:16, name:"BLACKPINK Born Pink Tour", venue:"Philippine Arena", category:"K-Pop", price:18000, date:"Mar 2025", rating:4.9, image:"https://via.placeholder.com/250/FF69B4/000000?text=BLACKPINK", booking:"TicketNet" },
-              { id:17, name:"Ben&Ben Send-Off Concert", venue:"Araneta Coliseum", category:"OPM", price:3500, date:"Dec 2024", rating:4.8, image:"https://via.placeholder.com/250/4169E1/ffffff?text=Ben&Ben", booking:"SM Tickets" },
-            ]
-          }
-        };
-        return data[category] || data.cravings;
-      };
+      useEffect(() => {
+        if (!loggedIn) return;
+        switch(tab) {
+          case "concerts": setItems(data.concerts); break;
+          case "food": setItems(data.food); break;
+          case "perfume": setItems(data.fashion.perfume); break;
+          case "pants": setItems(data.fashion.pants); break;
+          case "shirts": setItems(data.fashion.shirts); break;
+          case "accessories": setItems(data.fashion.accessories); break;
+          case "travel": setItems(data.travel); break;
+        }
+      }, [tab, loggedIn]);
 
-      const getAIAdvice = async (mood, category) => {
-        setIsAiTyping(true);
-        await new Promise(r => setTimeout(r, 2000));
-        setIsAiTyping(false);
-        setAiAdvice(`Here's advice based on your mood: "${mood}" in category "${category}"`);
-        setUserPoints(prev => prev + 10);
-      };
-
-      const startVoiceInput = () => {
-        setIsListening(true);
-        setTimeout(() => {
-          const randomInput = "I'm feeling happy!";
-          setMoodInput(randomInput);
-          setIsListening(false);
-          getAIAdvice(randomInput, activeTab);
-        }, 2000);
-      };
-
-      const handleAddCart = (item) => {
-        setCart(prev => {
-          const existing = prev.find(i => i.id === item.id);
-          if(existing) return prev.map(i => i.id===item.id ? {...i, quantity:i.quantity+1} : i);
-          return [...prev, {...item, quantity:1}];
-        });
-        setUserPoints(prev => prev + 5);
-      };
-
-      const handleCheckout = () => {
-        if(!deliveryAddress){ alert("Please enter delivery address."); return; }
-        alert(`🎉 Order placed! ${cart.length} items. Total: ₱${cart.reduce((t,i)=>t+i.price*i.quantity,0).toLocaleString()}. Delivery: ${deliveryAddress}`);
-        setCart([]); 
-        setDeliveryAddress('');
-        setUserPoints(prev => prev + 50);
-      };
-
-      useEffect(() => { 
-        const data = getRealTimeData(activeTab);
-        setRecommendations(data.items);
-      }, [activeTab]);
+      if (!loggedIn) {
+        return (
+          <div className="flex flex-col items-center justify-center min-h-screen p-4">
+            <h1 className="text-4xl font-bold mb-6">MoodBuy Login</h1>
+            <input
+              type="text"
+              placeholder="Enter API Key"
+              value={apiKey}
+              onChange={e => setApiKey(e.target.value)}
+              className="px-4 py-2 rounded text-black w-80 mb-4"
+            />
+            <button
+              onClick={() => {
+                if (apiKey.trim()) setLoggedIn(true);
+                else alert("Please enter a valid API key.");
+              }}
+              className="px-6 py-2 bg-yellow-400 rounded font-bold text-black"
+            >
+              Start
+            </button>
+          </div>
+        );
+      }
 
       return (
-        <div className="min-h-screen flex flex-col md:flex-row">
-          {/* Sidebar & Points */}
-          <div className="gradient-bg text-white p-8 w-full md:w-80 flex-shrink-0 shadow-2xl">
-            <h1 className="text-5xl font-bold mb-3 flex items-center space-x-3">
-              <Icon iconName="Sparkles" className="w-12 h-12 text-4xl" /> 
-              <span className="bg-gradient-to-r from-yellow-200 to-pink-200 bg-clip-text text-transparent">MoodBuy</span>
-            </h1>
-            <p className="text-xl text-purple-100 mb-8 italic">"Your Mood. Your Life. Instantly."</p>
-            <div className="bg-white bg-opacity-20 rounded-xl p-4 mb-6 backdrop-blur-sm">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-lg">🔥 Streak</span>
-                <span className="text-2xl font-bold">{userStreak} days</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-lg">⭐ Points</span>
-                <span className="text-2xl font-bold">{userPoints}</span>
-              </div>
-            </div>
+        <div className="p-8">
+          <h1 className="text-4xl font-bold mb-6">MoodBuy – Your Mood, Your Life</h1>
+          <div className="flex flex-wrap gap-2 mb-6">
+            {["concerts","food","perfume","pants","shirts","accessories","travel"].map(t => (
+              <button
+                key={t}
+                onClick={()=>setTab(t)}
+                className={`px-4 py-2 rounded ${tab === t ? "bg-yellow-400 text-black" : "bg-indigo-500"}`}
+              >
+                {t.charAt(0).toUpperCase() + t.slice(1)}
+              </button>
+            ))}
           </div>
 
-          {/* Main Content */}
-          <main className="flex-1 p-8 bg-gray-50">
-            <div className="max-w-7xl mx-auto">
-              <h2 className="text-4xl font-bold mb-6">Available Products</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {recommendations.map(item => (
-                  <div key={item.id} className="bg-white rounded-2xl shadow-xl p-6 flex flex-col card-hover">
-                    <img src={item.image} alt={item.name} className="h-52 w-full object-cover rounded-xl mb-5 shadow-md"/>
-                    <h3 className="text-2xl font-bold text-gray-800 mb-2">{item.name}</h3>
-                    {activeTab === 'cravings' && <p className="text-base text-blue-600 font-semibold mb-2">Delivery: {item.delivery}</p>}
-                    {activeTab === 'ootd' && <p className="text-base text-blue-600 font-semibold mb-2">Available on: {item.delivery}</p>}
-                    {activeTab === 'travel' && <p className="text-base text-blue-600 font-semibold mb-2">Booking: {item.booking}</p>}
-                    {activeTab === 'concerts' && <p className="text-base text-blue-600 font-semibold mb-2">Tickets: {item.booking}</p>}
-                    <p className="text-3xl font-bold text-green-600 mb-6">₱{item.price.toLocaleString()}</p>
-                    <button 
-                      onClick={()=>handleAddCart(item)} 
-                      className="mt-auto py-4 text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl shadow-lg transform hover:scale-105 transition flex items-center justify-center space-x-3"
-                    >
-                      <Icon iconName="ShoppingCart" /> <span>Add to Cart (+5 pts)</span>
-                    </button>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {items.map((item, idx) => (
+              <div key={idx} className="bg-white bg-opacity-20 rounded-lg p-4 flex flex-col items-center">
+                <img
+                  src={`https://picsum.photos/seed/${encodeURIComponent(item.id || item)}/300/200`}
+                  alt={item.artist || item}
+                  className="rounded mb-2"
+                />
+                {tab === "concerts" ? (
+                  <div className="text-center">
+                    <h2 className="text-xl font-bold">{item.artist}</h2>
+                    <p>{item.event}</p>
+                    <p className="italic">{item.venue} — {item.date}</p>
                   </div>
-                ))}
+                ) : (
+                  <p className="text-lg text-center">{item}</p>
+                )}
               </div>
-            </div>
-          </main>
+            ))}
+          </div>
         </div>
       );
     };
 
-    const root = createRoot(document.getElementById('root'));
-    root.render(<MoodBuy />);
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
   </script>
 </body>
 </html>
