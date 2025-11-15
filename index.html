@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MoodBuy – Your Mood, Your Life</title>
+  <title>MoodBuy – Your Mood, Your Life (Modified)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -12,77 +12,51 @@
 <body class="bg-gradient-to-br from-purple-600 via-indigo-700 to-purple-800 text-white min-h-screen">
   <div id="root"></div>
   <script type="text/babel">
-    const { useState, useEffect, useMemo } = React;
+    const { useState, useEffect, useMemo, useCallback } = React;
 
+    // --- DATA ---
     const data = {
       concerts: [
-        { id: 1, artist: "Hatsune Miku", event: "MIKU EXPO 2025", venue: "SM Mall of Asia Arena, Pasay", date: "Nov 16, 2025", price: "₱3,500 - ₱8,000" },
-        { id: 2, artist: "David Archuleta / Vanessa Carlton / Blue", event: "Playback Pop It Up!", venue: "SM Mall of Asia Arena", date: "Nov 21, 2025", price: "₱2,500 - ₱6,000" },
-        { id: 3, artist: "Dionela", event: "The Grace Tour", venue: "New Frontier Theater", date: "Nov 21–22, 2025", price: "₱1,500 - ₱4,000" },
-        { id: 4, artist: "Jason Derulo", event: "Live in Manila", venue: "SM Mall of Asia Arena", date: "Nov 22, 2025", price: "₱3,000 - ₱10,000" },
-        { id: 5, artist: "BLACKPINK", event: "DEADLINE World Tour", venue: "Philippine Arena, Bulacan", date: "Nov 22–23, 2025", price: "₱5,000 - ₱25,000" },
-        { id: 6, artist: "Jeremy Zucker", event: "Garden State Tour", venue: "New Frontier Theater, QC", date: "Nov 29, 2025", price: "₱2,000 - ₱5,000" },
-        { id: 7, artist: "BINI", event: "BINIFIED Year-End Party", venue: "Philippine Arena", date: "Nov 29, 2025", price: "₱2,500 - ₱8,000" },
-        { id: 8, artist: "Tyla", event: "We Wanna Party Asia Tour", venue: "SM Mall of Asia Arena", date: "Dec 3, 2025", price: "₱2,800 - ₱7,500" },
-        { id: 9, artist: "Doja Cat", event: "Ma Vie World Tour", venue: "SM Mall of Asia Arena", date: "Dec 7, 2025", price: "₱4,000 - ₱12,000" },
-        { id: 10, artist: "Rich Brian", event: "Where Is My Head? Tour", venue: "New Frontier Theater", date: "Dec 8, 2025", price: "₱2,200 - ₱5,500" },
-        { id: 11, artist: "Michael Learns to Rock", event: "Encore – All The Hits", venue: "SM MOA Arena", date: "Nov 18, 2025", price: "₱2,500 - ₱7,000" },
-        { id: 12, artist: "SEVENTEEN", event: "NEW_ World Tour", venue: "Philippine Sports Stadium", date: "Mar 21, 2026", price: "₱4,500 - ₱15,000" },
-        { id: 13, artist: "SB19", event: "Simula at Wakas Tour", venue: "Philippine Arena", date: "2025", price: "₱2,000 - ₱6,500" },
+        { id: 'c1', type: 'concert', artist: "Hatsune Miku", event: "MIKU EXPO 2025", venue: "SM Mall of Asia Arena, Pasay", date: "Nov 16, 2025", price: 3500 },
+        { id: 'c2', type: 'concert', artist: "David Archuleta / Vanessa Carlton / Blue", event: "Playback Pop It Up!", venue: "SM Mall of Asia Arena", date: "Nov 21, 2025", price: 2500 },
+        { id: 'c3', type: 'concert', artist: "Dionela", event: "The Grace Tour", venue: "New Frontier Theater", date: "Nov 21–22, 2025", price: 1500 },
+        { id: 'c4', type: 'concert', artist: "Jason Derulo", event: "Live in Manila", venue: "SM Mall of Asia Arena", date: "Nov 22, 2025", price: 3000 },
+        { id: 'c5', type: 'concert', artist: "BLACKPINK", event: "DEADLINE World Tour", venue: "Philippine Arena, Bulacan", date: "Nov 22–23, 2025", price: 5000 },
       ],
-
       food: [
-        "Jollibee", "Mang Inasal", "Chowking", "Max's Restaurant", "McDonald's Philippines",
-        "KFC Philippines", "Greenwich Pizza", "Shakey's Philippines", "Yellow Cab Pizza",
-        "Andok's Lechon Manok", "Red Ribbon Bakeshop", "Tropical Hut", "Army Navy",
-        "Bigg's Diner", "Tapa King", "Gerry's Grill", "Cabalen", "Fish & Co.",
-        "Buffalo Wild Wings (PH)", "Texas Roadhouse (PH)", "Bulgogi Brothers", "Italianni's",
-        "Hard Rock Cafe (PH)", "Modern Shanghai", "Tomatito", "Las Flores", "Buffet 101 (PH)",
-        "Kenny Rogers Roasters Philippines", "Pancake House Philippines", "Tokyo Tokyo",
-        "Mang Larry's Isawan", "Conti's Bakeshop", "Bo's Coffee", "Figaro Coffee Company",
-        "Gino's Pizza", "Red Lobster (PH)", "Manam", "Sarsa Kitchen + Bar", "Black Scoop Café",
-        "Army Navy Burrito", "7‑Eleven (food kiosk)", "Goldilocks Bakeshop", "Tropical Hut Drive‑Thru",
-        "Racks", "Rico's Lechon", "Casa Verde", "Max's Corner Bakery", "Mister Donut Philippines",
-        "Sbarro (PH)", "Denny's Philippines", "Pizza Hut Philippines", "Burger King Philippines",
-        "Waffle Time (PH)", "Dampa", "Tapa Ni Lola", "Mesa Filipino Moderne"
+        { id: 'f1', type: 'food', name: "Jollibee Chickenjoy", price: 120 }, 
+        { id: 'f2', type: 'food', name: "Mang Inasal Paa", price: 150 }, 
+        { id: 'f3', type: 'food', name: "Chowking Lauriat", price: 250 },
+        { id: 'f4', type: 'food', name: "Greenwich Pizza", price: 400 },
       ],
-
-      fashion: {
-        perfume: [
-          "Bench Body Cologne", "Penshoppe Signature Scent", "Mahogany Air Cologne",
-          "Now and Beyond Perfume", "Silka Scented Lotion", "Victoria's Secret Bombshell (PH)",
-          "Paris Hilton Perfume PH", "Calvin Klein Euphoria", "Elizabeth Arden Green Tea", "Armani Acqua Di Gio"
-        ],
-        pants: [
-          "Levi's", "Uniqlo", "Penshoppe", "Bench", "Giordano", "Wrangler", "Lee", "Diesel",
-          "Guess", "Zara", "H&M", "Mango", "Dockers", "G‑Star RAW", "Gap", "Old Navy"
-        ],
-        shirts: [
-          "Uniqlo Shirt", "H&M Shirt", "Penshoppe Shirt", "Bench Tee", "Giordano Polo", "Zara Shirt",
-          "Mango Top", "Ralph Lauren Polo", "Tommy Hilfiger Shirt", "Calvin Klein Shirt",
-          "Levi's Denim Shirt", "Gap Oxford", "Uniqlo U Shirt", "Bershka Shirt", "Cotton On Tee", "Topman Shirt"
-        ],
-        accessories: [
-          "Fossil Watch", "Casio Watch", "Michael Kors Bag", "Kate Spade Bag", "Ray‑Ban Sunglasses",
-          "GUESS Belt", "Tory Burch Wallet", "Charles & Keith Handbag", "Swatch Watch", "Timex Watch"
-        ]
-      },
-
+      perfume: [
+        { id: 'p1', type: 'perfume', name: "Bench Body Cologne", price: 180 }, 
+        { id: 'p2', type: 'perfume', name: "Victoria's Secret Bombshell", price: 3500 },
+      ],
+      pants: [
+        { id: 'p3', type: 'pants', name: "Levi's 501", price: 2800 }, 
+        { id: 'p4', type: 'pants', name: "Uniqlo Jeans", price: 1500 },
+      ],
+      shirts: [
+        { id: 's1', type: 'shirt', name: "Uniqlo U Shirt", price: 790 }, 
+        { id: 's2', type: 'shirt', name: "H&M Shirt", price: 650 },
+      ],
+      accessories: [
+        { id: 'a1', type: 'accessory', name: "Casio G-Shock Watch", price: 4500 }, 
+        { id: 'a2', type: 'accessory', name: "Ray‑Ban Sunglasses", price: 7000 },
+      ],
       travel: [
-        "Boracay, Aklan", "El Nido, Palawan", "Coron, Palawan", "Banaue Rice Terraces, Ifugao",
-        "Vigan, Ilocos Sur", "Intramuros, Manila", "Mount Pulag, Benguet", "Chocolate Hills, Bohol",
-        "Cebu City, Cebu", "Siargao, Surigao del Norte", "Batanes", "Sagada, Mountain Province",
-        "Tagaytay, Cavite", "Taal Volcano, Batangas", "Pampanga (Angeles)", "Puerto Princesa, Palawan",
-        "Underground River, Palawan", "Panglao, Bohol", "Hundred Islands, Pangasinan", "Camiguin",
-        "Baguio City, Benguet", "Davao City, Davao del Sur", "Mount Mayon, Albay", "Caramoan, Camarines Sur",
-        "Pagsanjan Falls, Laguna", "Apo Island, Negros Oriental", "Bicol Region (Sorsogon)", "Baler, Aurora",
-        "Subic, Zambales", "Corregidor, Cavite", "Siquijor Island", "Kalanggaman Island, Leyte",
-        "Malapascua Island, Cebu", "Camotes Islands, Cebu", "Palaui Island, Cagayan", "Marinduque", "Romblon Province",
-        "Tokyo, Japan", "Seoul, South Korea", "Bangkok, Thailand", "Paris, France", "London, UK",
-        "New York, USA", "Los Angeles, USA", "Sydney, Australia", "Bali, Indonesia", "Dubai, UAE",
-        "Singapore", "Rome, Italy", "Barcelona, Spain", "Amsterdam, Netherlands", "Maldives"
+        { id: 't1', type: 'travel', name: "Boracay, Aklan (3D/2N)", price: 10000 }, 
+        { id: 't2', type: 'travel', name: "El Nido, Palawan Package", price: 15000 },
       ]
     };
+
+    // Helper to get all items in a flat array for easier lookup
+    const allItems = [
+        ...data.concerts, 
+        ...data.food.map(f => ({...f, price: f.price})), // Food items simplified for demo
+        ...data.perfume, ...data.pants, ...data.shirts, ...data.accessories, ...data.travel
+    ];
 
     const TABS = [
       { id: "concerts", label: "Concerts", icon: "🎵" },
@@ -93,13 +67,224 @@
       { id: "accessories", label: "Accessories", icon: "⌚" },
       { id: "travel", label: "Travel", icon: "✈️" }
     ];
+    
+    // --- COMPONENTS ---
 
+    // 1. AI Assistant Component
+    const AIAssistant = ({ tab, cartItems }) => {
+      const [chatOpen, setChatOpen] = useState(false);
+      const [message, setMessage] = useState('');
+      const [history, setHistory] = useState([
+        { sender: 'AI', text: "Hello! I'm MoodBot, your Sales Psychologist. How are you feeling today, and what kind of product are you looking for?" }
+      ]);
+
+      const cartCount = cartItems.length;
+
+      const mockAIResponse = (userMsg) => {
+        const lowerMsg = userMsg.toLowerCase();
+        let response = "That's interesting! Based on your current mood and the items in our **" + tab + "** category, I recommend you look at our featured items. Can I help you find something specific?";
+        
+        if (cartCount > 0) {
+            response += ` P.S. I see **${cartCount}** item(s) in your cart. Ready to check out and treat yourself?`;
+        }
+
+        if (lowerMsg.includes("sad") || lowerMsg.includes("lonely")) {
+            response = "It sounds like you might need a pick-me-up! In the spirit of self-care, maybe a ticket to the **Hatsune Miku** concert or a soothing **Victoria's Secret Bombshell** perfume could elevate your spirits.";
+        } else if (lowerMsg.includes("happy") || lowerMsg.includes("excited")) {
+            response = "That's fantastic! Harness that energy! A celebratory meal at **Jollibee** or planning a grand trip to **Boracay** would be a great way to mark this moment.";
+        }
+        
+        return response;
+      };
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!message.trim()) return;
+
+        const newUserMsg = { sender: 'User', text: message };
+        setHistory(prev => [...prev, newUserMsg]);
+        setMessage('');
+
+        // Mock AI response delay
+        setTimeout(() => {
+          const aiResponse = mockAIResponse(newUserMsg.text);
+          setHistory(prev => [...prev, { sender: 'AI', text: aiResponse }]);
+        }, 800);
+      };
+
+      return (
+        <div className="fixed bottom-5 right-5 z-50">
+          {!chatOpen && (
+            <button 
+              onClick={() => setChatOpen(true)}
+              className="bg-yellow-500 hover:bg-yellow-600 text-black p-4 rounded-full shadow-2xl transition transform hover:scale-110"
+              title="Open AI Chat"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4m-7 0L7 9.586m0 0A2 2 0 015 8h2m2-3h4M7 3h10a2 2 0 012 2v4m0 0l-3 3"></path></svg>
+            </button>
+          )}
+          {chatOpen && (
+            <div className="bg-white bg-opacity-95 backdrop-blur-md rounded-xl shadow-2xl w-80 h-96 flex flex-col">
+              <div className="flex justify-between items-center p-3 bg-yellow-400 text-black rounded-t-xl">
+                <h3 className="font-bold">🤖 MoodBot (Sales Psychologist)</h3>
+                <button onClick={() => setChatOpen(false)} className="text-xl font-bold">×</button>
+              </div>
+              <div className="flex-1 overflow-y-auto p-3 space-y-3">
+                {history.map((msg, index) => (
+                  <div key={index} className={`flex ${msg.sender === 'User' ? 'justify-end' : 'justify-start'}`}>
+                    <div className={`max-w-xs p-2 rounded-lg text-sm ${
+                      msg.sender === 'User' ? 'bg-indigo-500 text-white' : 'bg-gray-200 text-black'
+                    }`}>
+                      {msg.text}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <form onSubmit={handleSubmit} className="p-3 border-t border-gray-300">
+                <input
+                  type="text"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="Ask MoodBot..."
+                  className="w-full px-3 py-2 rounded-lg text-black bg-white focus:outline-none focus:ring-1 focus:ring-yellow-400"
+                />
+              </form>
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    // 2. Cart View Component
+    const CartView = ({ cartItems, onRemove, onCheckout, onContinueShopping }) => {
+        const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        
+        if (cartItems.length === 0) {
+            return (
+                <div className="text-center p-12 bg-white bg-opacity-10 rounded-xl max-w-lg mx-auto mt-12">
+                    <h2 className="text-3xl font-bold mb-4">🛒 Your Cart is Empty</h2>
+                    <p className="text-gray-300">Time to find something that matches your mood!</p>
+                    <button onClick={onContinueShopping} className="mt-6 px-6 py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-lg transition">
+                        Continue Shopping
+                    </button>
+                </div>
+            );
+        }
+
+        return (
+            <div className="p-4 md:p-8">
+                <h2 className="text-4xl font-bold mb-8">🛒 Shopping Cart</h2>
+                <div className="grid md:grid-cols-3 gap-8">
+                    <div className="md:col-span-2 space-y-4">
+                        {cartItems.map(item => (
+                            <div key={item.id} className="flex justify-between items-center bg-white bg-opacity-10 p-4 rounded-lg">
+                                <div className="flex items-center space-x-4">
+                                    <div className="w-16 h-16 bg-gray-500 rounded-lg flex items-center justify-center text-xs text-white">
+                                        [Image]
+                                    </div>
+                                    <div>
+                                        <p className="font-semibold text-lg">{item.name || item.artist}</p>
+                                        <p className="text-sm text-gray-300">Quantity: {item.quantity}</p>
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <p className="font-bold text-yellow-300">₱{(item.price * item.quantity).toLocaleString()}</p>
+                                    <button 
+                                        onClick={() => onRemove(item.id)} 
+                                        className="text-red-400 text-sm hover:text-red-500 mt-1"
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    
+                    {/* Checkout Summary */}
+                    <div className="md:col-span-1 bg-white bg-opacity-15 p-6 rounded-xl shadow-lg h-fit">
+                        <h3 className="text-2xl font-bold mb-4">Summary</h3>
+                        <div className="flex justify-between border-b border-gray-600 pb-2 mb-2">
+                            <span>Subtotal:</span>
+                            <span>₱{total.toLocaleString()}</span>
+                        </div>
+                        <div className="flex justify-between font-bold text-xl mb-6">
+                            <span>Total:</span>
+                            <span className="text-yellow-300">₱{total.toLocaleString()}</span>
+                        </div>
+                        <button 
+                            onClick={onCheckout} 
+                            className="w-full py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg transition transform hover:scale-[1.02]"
+                        >
+                            Proceed to Checkout
+                        </button>
+                        <button onClick={onContinueShopping} className="w-full mt-3 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition">
+                            Continue Shopping
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
+    // 3. Item Card Component
+    const ItemCard = ({ item, tab, onAddToCart }) => {
+        // Use name if available, otherwise fallback to artist
+        const itemName = item.name || item.artist;
+        const displayPrice = typeof item.price === 'number' ? `₱${item.price.toLocaleString()}` : item.price;
+        
+        // Google Images Placeholder Logic: replaces picsum with a search-friendly query
+        const imageQuery = itemName + (item.event ? ' ' + item.event : '');
+        const imageUrl = `https://via.placeholder.com/400x250/374151/FFFFFF?text=Search+Image+for+${encodeURIComponent(imageQuery)}`;
+
+        return (
+            <div 
+                className="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl overflow-hidden hover:bg-opacity-20 transition transform hover:scale-105 hover:shadow-2xl"
+            >
+                <img
+                    src={imageUrl} // Placeholder for Google Images search result
+                    alt={itemName}
+                    className="w-full h-48 object-cover"
+                    loading="lazy"
+                />
+                
+                <div className="p-4">
+                    {tab === "concerts" ? (
+                        <>
+                            <h2 className="text-xl font-bold mb-1">{item.artist}</h2>
+                            <p className="text-yellow-300 font-medium text-sm mb-2">{item.event}</p>
+                            <p className="text-gray-200 text-sm mb-1">{item.venue}</p>
+                            <p className="text-gray-300 text-sm mb-2">{item.date}</p>
+                            <p className="text-green-300 font-semibold text-sm">{displayPrice}</p>
+                        </>
+                    ) : (
+                        <>
+                            <p className="text-lg font-medium text-center">{itemName}</p>
+                            <p className="text-green-300 font-semibold text-center mt-1">{displayPrice}</p>
+                        </>
+                    )}
+                    <button
+                        onClick={() => onAddToCart(item)}
+                        className="mt-3 w-full py-2 bg-yellow-500 hover:bg-yellow-600 text-black font-bold rounded-lg transition text-sm"
+                    >
+                        Add to Cart 🛒
+                    </button>
+                </div>
+            </div>
+        );
+    };
+
+
+    // --- MAIN APP ---
     const App = () => {
       const [apiKey, setApiKey] = useState("");
       const [loggedIn, setLoggedIn] = useState(false);
       const [tab, setTab] = useState("concerts");
       const [searchQuery, setSearchQuery] = useState("");
+      const [cartItems, setCartItems] = useState([]);
+      const [view, setView] = useState("shop"); // 'shop' or 'cart'
+      const [streak, setStreak] = useState(0); // 4. Streak Points
 
+      // --- ITEM FILTERING LOGIC ---
       const items = useMemo(() => {
         if (!loggedIn) return [];
         
@@ -107,10 +292,10 @@
         switch(tab) {
           case "concerts": rawItems = data.concerts; break;
           case "food": rawItems = data.food; break;
-          case "perfume": rawItems = data.fashion.perfume; break;
-          case "pants": rawItems = data.fashion.pants; break;
-          case "shirts": rawItems = data.fashion.shirts; break;
-          case "accessories": rawItems = data.fashion.accessories; break;
+          case "perfume": rawItems = data.fashion.perfume ? data.fashion.perfume.map((name, i) => ({ id: `p${i+10}`, type: 'perfume', name, price: 500 })) : []; break;
+          case "pants": rawItems = data.fashion.pants ? data.fashion.pants.map((name, i) => ({ id: `p${i+20}`, type: 'pants', name, price: 2000 })) : []; break;
+          case "shirts": rawItems = data.fashion.shirts ? data.fashion.shirts.map((name, i) => ({ id: `p${i+30}`, type: 'shirt', name, price: 800 })) : []; break;
+          case "accessories": rawItems = data.fashion.accessories ? data.fashion.accessories.map((name, i) => ({ id: `p${i+40}`, type: 'accessory', name, price: 3000 })) : []; break;
           case "travel": rawItems = data.travel; break;
           default: rawItems = [];
         }
@@ -119,18 +304,46 @@
 
         const query = searchQuery.toLowerCase();
         return rawItems.filter(item => {
-          if (typeof item === 'string') {
-            return item.toLowerCase().includes(query);
-          }
-          return item.artist?.toLowerCase().includes(query) || 
+          return (item.artist?.toLowerCase().includes(query) || 
                  item.event?.toLowerCase().includes(query) ||
-                 item.venue?.toLowerCase().includes(query);
+                 item.venue?.toLowerCase().includes(query) ||
+                 item.name?.toLowerCase().includes(query));
         });
       }, [tab, loggedIn, searchQuery]);
 
+      // --- CART HANDLERS ---
+      const handleAddToCart = useCallback((itemToAdd) => {
+        setCartItems(prevCart => {
+          const existingItem = prevCart.find(item => item.id === itemToAdd.id);
+          if (existingItem) {
+            return prevCart.map(item =>
+              item.id === itemToAdd.id
+                ? { ...item, quantity: item.quantity + 1 }
+                : item
+            );
+          } else {
+            return [...prevCart, { ...itemToAdd, quantity: 1, name: itemToAdd.name || itemToAdd.artist }];
+          }
+        });
+      }, []);
+
+      const handleRemoveFromCart = useCallback((itemId) => {
+        setCartItems(prevCart => prevCart.filter(item => item.id !== itemId));
+      }, []);
+
+      const handleCheckout = () => {
+        alert(`Checkout successful! Total: ₱${cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0).toLocaleString()}. You earned 1 streak point!`);
+        setCartItems([]);
+        setStreak(prev => prev + 1); // Increment streak on successful checkout
+        setView("shop");
+      };
+
+      // --- AUTH HANDLERS ---
       const handleLogin = () => {
         if (apiKey.trim()) {
           setLoggedIn(true);
+          // Mock daily streak logic upon login
+          setStreak(prev => prev + 1); 
         } else {
           alert("Please enter a valid API key.");
         }
@@ -140,9 +353,13 @@
         setLoggedIn(false);
         setApiKey("");
         setSearchQuery("");
+        setCartItems([]);
+        setStreak(0);
+        setView("shop");
       };
 
       if (!loggedIn) {
+        // Login View (unchanged)
         return (
           <div className="flex flex-col items-center justify-center min-h-screen p-4">
             <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl max-w-md w-full">
@@ -173,6 +390,18 @@
         );
       }
 
+      if (view === "cart") {
+        return (
+          <CartView 
+            cartItems={cartItems} 
+            onRemove={handleRemoveFromCart}
+            onCheckout={handleCheckout}
+            onContinueShopping={() => setView("shop")}
+          />
+        );
+      }
+
+      // Main Shop View
       return (
         <div className="min-h-screen p-4 md:p-8">
           <div className="max-w-7xl mx-auto">
@@ -185,12 +414,32 @@
                 <p className="text-gray-200 mt-1">Discover what matches your mood</p>
               </div>
               
-              <button
-                onClick={handleLogout}
-                className="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg transition text-sm font-medium"
-              >
-                Logout
-              </button>
+              <div className="flex items-center space-x-4">
+                {/* Streak Points Display */}
+                <div className="px-4 py-2 bg-pink-500 rounded-lg text-sm font-medium shadow-lg">
+                    🔥 Streak: **{streak}**
+                </div>
+                
+                {/* Cart Button */}
+                <button
+                    onClick={() => setView("cart")}
+                    className="relative px-4 py-2 bg-green-500 hover:bg-green-600 rounded-lg transition text-sm font-medium"
+                >
+                    🛒 Cart
+                    {cartItems.length > 0 && (
+                        <span className="absolute -top-2 -right-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-100 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+                            {cartItems.length}
+                        </span>
+                    )}
+                </button>
+                
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg transition text-sm font-medium"
+                >
+                  Logout
+                </button>
+              </div>
             </div>
 
             {/* Search Bar */}
@@ -232,36 +481,20 @@
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {items.map((item, idx) => (
-                  <div 
-                    key={idx} 
-                    className="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl overflow-hidden hover:bg-opacity-20 transition transform hover:scale-105 hover:shadow-2xl"
-                  >
-                    <img
-                      src={`https://picsum.photos/seed/${encodeURIComponent(item.id || item)}/400/250`}
-                      alt={item.artist || item}
-                      className="w-full h-48 object-cover"
-                      loading="lazy"
-                    />
-                    
-                    <div className="p-4">
-                      {tab === "concerts" ? (
-                        <>
-                          <h2 className="text-xl font-bold mb-1">{item.artist}</h2>
-                          <p className="text-yellow-300 font-medium text-sm mb-2">{item.event}</p>
-                          <p className="text-gray-200 text-sm mb-1">{item.venue}</p>
-                          <p className="text-gray-300 text-sm mb-2">{item.date}</p>
-                          <p className="text-green-300 font-semibold text-sm">{item.price}</p>
-                        </>
-                      ) : (
-                        <p className="text-lg font-medium text-center">{item}</p>
-                      )}
-                    </div>
-                  </div>
+                {items.map((item) => (
+                  <ItemCard 
+                    key={item.id} 
+                    item={item} 
+                    tab={tab}
+                    onAddToCart={handleAddToCart}
+                  />
                 ))}
               </div>
             )}
           </div>
+          
+          {/* 1. AI Assistant Component */}
+          <AIAssistant tab={tab} cartItems={cartItems} />
         </div>
       );
     };
