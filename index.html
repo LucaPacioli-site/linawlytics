@@ -93,13 +93,8 @@
       const [userPoints, setUserPoints] = useState(350);
       const [aiAdvice, setAiAdvice] = useState('');
       const [isAiTyping, setIsAiTyping] = useState(false);
-      const [chatHistory, setChatHistory] = useState([]);
 
-      // Real-time data simulation (in production, this would fetch from actual APIs)
       const getRealTimeData = (category) => {
-        const today = new Date();
-        const month = today.toLocaleString('en-US', { month: 'long' });
-        
         const data = {
           cravings: {
             items: [
@@ -135,75 +130,21 @@
             ]
           }
         };
-        
         return data[category] || data.cravings;
       };
 
       const getAIAdvice = async (mood, category) => {
         setIsAiTyping(true);
-        
-        // Simulate AI thinking
         await new Promise(r => setTimeout(r, 2000));
-        
-        const responses = {
-          cravings: {
-            stressed: "I sense you're feeling overwhelmed. Comfort food releases serotonin! 🧠 Try Jollibee Chickenjoy - that crispy, familiar taste brings instant comfort. The nostalgia will ease your mind. Pair it with a sweet dessert to boost those endorphins! 🍗✨",
-            happy: "You're radiating positive energy! 🌟 Celebrate with something vibrant like Army Navy's Burrito - colorful, flavorful, and matches your vibe! Or share a Yellow Cab pizza with friends to multiply that joy! 🎉🍕",
-            tired: "Feeling drained? Your body needs quick energy! 🔋 Mang Inasal's BBQ meal with unlimited rice gives you the fuel you need. The protein will sustain you, and that savory taste will wake up your senses! 💪🍖",
-            sad: "I'm here for you. 💙 When we're down, we need foods that hug us from the inside. Tim Ho Wan's warm, fluffy pork buns are like little clouds of comfort. The act of eating something special can shift your mood. You deserve this treat. 🥟💕",
-            hungry: "Your body is calling for satisfaction! 🍽️ Go for the Chickenjoy Bucket - it's filling, satisfying, and ready in 25 minutes. Don't let hunger control your mood. Feed yourself well, you matter! 🧡",
-            default: "Tell me how you're feeling right now, and I'll find the perfect food to match your emotional and nutritional needs! 🧠💭"
-          },
-          ootd: {
-            confident: "YES! Channel that confidence! 👑 Nike Air Force 1 will elevate your presence. When you look good, you FEEL unstoppable. Pair with something sleek from H&M. Walk like you own every room! 💪✨",
-            anxious: "Comfort is key when anxiety hits. 🫂 Uniqlo's AIRism Tee is breathable and soft - it won't add to sensory stress. Pair with familiar denim from Penshoppe. When your clothes feel good, your mind can relax. 🧘‍♀️💙",
-            excited: "Match that energy! 🔥 Go bold with H&M's Summer Dress - color psychology shows bright colors amplify excitement! Or rock that Denim Jacket for edgy confidence. Express yourself! 🎨👗",
-            tired: "Prioritize comfort without sacrificing style. 😌 Uniqlo's soft fabrics let your body breathe. When you're tired, your nervous system needs gentleness. Dress comfortably, recover peacefully. 💆‍♀️",
-            default: "Fashion is emotional expression! Share your mood with me, and I'll style you in a way that supports your mental and emotional state. What you wear affects how you feel! 👔🧠"
-          },
-          travel: {
-            stressed: "You NEED this escape! 🌊 Stress damages your mental health. Boracay's white sand and blue waters activate your parasympathetic nervous system - instant calm. Book it. Your mental health isn't a luxury, it's essential! 🏖️💆‍♀️",
-            adventurous: "Feed that thrill-seeking soul! 🏄‍♀️ Siargao's waves will give you the adrenaline rush that adventurous personalities crave. Endorphins from adventure = natural antidepressant! Go chase that high! 🌊⚡",
-            romantic: "Create memories that bond! 💕 Tagaytay's scenic views activate oxytocin (the love hormone). Whether solo reflection or couple's time, beautiful places deepen emotional connections. Invest in experiences! 🌅❤️",
-            exhausted: "Your body is BEGGING for rest! 😴 A Baguio nature trip gives you the restoration you desperately need. Cool air, nature sounds - these literally lower cortisol levels. Don't ignore burnout signals! 🌲💤",
-            default: "Travel is therapy for the soul! 🧳 Where do you want to go? I'll match destinations to your psychological needs and current emotional state. Let's plan your mental health retreat! 🗺️✨"
-          },
-          concerts: {
-            lonely: "Music connects souls! 🎵 Concerts cure loneliness by creating shared experiences. Ben&Ben's emotional OPM will make you feel understood. Thousands feeling the SAME emotions = instant community! You're not alone! 🤝💙",
-            energetic: "RELEASE that energy! 🔥 BLACKPINK's high-energy performance matches your vibe! Dancing releases endorphins, screaming releases tension. Let loose! Physical expression = emotional freedom! 💃⚡",
-            nostalgic: "Honor those memories! 🎶 Coldplay brings that bittersweet nostalgia that heals. Sometimes we need to FEEL to heal. Music gives permission to process emotions safely. Cry if you need to! 😢💕",
-            excited: "AMPLIFY THAT JOY! 🎉 Taylor Swift's Eras Tour is pure euphoria! Anticipation + collective excitement = dopamine overload! This is the kind of joy your soul craves! Live in this moment! ✨🎤",
-            default: "Music is medicine! 🎵 Tell me your emotional state, and I'll recommend concerts that serve as therapy. Live music impacts brain chemistry - let's use it to support your wellbeing! 🧠🎶"
-          }
-        };
-        
-        const categoryAdvice = responses[category] || responses.cravings;
-        const moodLower = mood.toLowerCase();
-        
-        let advice = categoryAdvice.default;
-        for (let key in categoryAdvice) {
-          if (moodLower.includes(key)) {
-            advice = categoryAdvice[key];
-            break;
-          }
-        }
-        
         setIsAiTyping(false);
-        setAiAdvice(advice);
-        setChatHistory(prev => [...prev, { user: mood, ai: advice, timestamp: new Date() }]);
+        setAiAdvice(`Here's advice based on your mood: "${mood}" in category "${category}"`);
         setUserPoints(prev => prev + 10);
       };
 
       const startVoiceInput = () => {
         setIsListening(true);
         setTimeout(() => {
-          const voiceInputs = [
-            "I'm feeling stressed and need comfort food",
-            "I'm sad and want something to cheer me up",
-            "I'm excited and want to look amazing",
-            "I need a vacation, I'm so tired"
-          ];
-          const randomInput = voiceInputs[Math.floor(Math.random() * voiceInputs.length)];
+          const randomInput = "I'm feeling happy!";
           setMoodInput(randomInput);
           setIsListening(false);
           getAIAdvice(randomInput, activeTab);
@@ -221,7 +162,7 @@
 
       const handleCheckout = () => {
         if(!deliveryAddress){ alert("Please enter delivery address."); return; }
-        alert(`🎉 Order placed! ${cart.length} items. Total: ₱${cart.reduce((t,i)=>t+i.price*i.quantity,0).toLocaleString()}. Delivery details sent to: ${deliveryAddress}\n\n+50 points earned! 🏆`);
+        alert(`🎉 Order placed! ${cart.length} items. Total: ₱${cart.reduce((t,i)=>t+i.price*i.quantity,0).toLocaleString()}. Delivery: ${deliveryAddress}`);
         setCart([]); 
         setDeliveryAddress('');
         setUserPoints(prev => prev + 50);
@@ -230,171 +171,51 @@
       useEffect(() => { 
         const data = getRealTimeData(activeTab);
         setRecommendations(data.items);
-        setAiAdvice('');
       }, [activeTab]);
 
       return (
         <div className="min-h-screen flex flex-col md:flex-row">
-          {/* Sidebar */}
+          {/* Sidebar & Points */}
           <div className="gradient-bg text-white p-8 w-full md:w-80 flex-shrink-0 shadow-2xl">
             <h1 className="text-5xl font-bold mb-3 flex items-center space-x-3">
               <Icon iconName="Sparkles" className="w-12 h-12 text-4xl" /> 
               <span className="bg-gradient-to-r from-yellow-200 to-pink-200 bg-clip-text text-transparent">MoodBuy</span>
             </h1>
             <p className="text-xl text-purple-100 mb-8 italic">"Your Mood. Your Life. Instantly."</p>
-            
-            {/* User Stats */}
             <div className="bg-white bg-opacity-20 rounded-xl p-4 mb-6 backdrop-blur-sm">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-lg">🔥 Streak</span>
+                <span className="text-2xl font-bold">{userStreak} days</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-lg">⭐ Points</span>
+                <span className="text-2xl font-bold">{userPoints}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Main Content */}
+          <main className="flex-1 p-8 bg-gray-50">
+            <div className="max-w-7xl mx-auto">
+              <h2 className="text-4xl font-bold mb-6">Available Products</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {recommendations.map(item => (
                   <div key={item.id} className="bg-white rounded-2xl shadow-xl p-6 flex flex-col card-hover">
                     <img src={item.image} alt={item.name} className="h-52 w-full object-cover rounded-xl mb-5 shadow-md"/>
                     <h3 className="text-2xl font-bold text-gray-800 mb-2">{item.name}</h3>
-                    
-                    {activeTab === 'cravings' && (
-                      <>
-                        <p className="text-lg text-purple-600 font-semibold mb-1">🏪 {item.restaurant}</p>
-                        <p className="text-base text-gray-600 mb-2">{item.category} • {item.deliveryTime}</p>
-                        <div className="flex items-center mb-3">
-                          <span className="text-yellow-500 text-xl mr-2">⭐</span>
-                          <span className="text-lg font-bold">{item.rating}</span>
-                        </div>
-                        <p className="text-base text-blue-600 font-semibold mb-3">📦 {item.delivery}</p>
-                      </>
-                    )}
-                    
-                    {activeTab === 'ootd' && (
-                      <>
-                        <p className="text-lg text-purple-600 font-semibold mb-1">🏬 {item.store}</p>
-                        <p className="text-base text-gray-600 mb-2">{item.category}</p>
-                        <p className="text-base text-green-600 font-semibold mb-2">✓ {item.availability}</p>
-                        <div className="flex items-center mb-3">
-                          <span className="text-yellow-500 text-xl mr-2">⭐</span>
-                          <span className="text-lg font-bold">{item.rating}</span>
-                        </div>
-                        <p className="text-base text-blue-600 font-semibold mb-3">📦 {item.delivery}</p>
-                      </>
-                    )}
-                    
-                    {activeTab === 'travel' && (
-                      <>
-                        <p className="text-lg text-purple-600 font-semibold mb-1">🎫 {item.provider}</p>
-                        <p className="text-base text-gray-600 mb-2">{item.category} • {item.duration}</p>
-                        <div className="flex items-center mb-3">
-                          <span className="text-yellow-500 text-xl mr-2">⭐</span>
-                          <span className="text-lg font-bold">{item.rating}</span>
-                        </div>
-                        <p className="text-base text-blue-600 font-semibold mb-3">📱 {item.booking}</p>
-                      </>
-                    )}
-                    
-                    {activeTab === 'concerts' && (
-                      <>
-                        <p className="text-lg text-purple-600 font-semibold mb-1">📍 {item.venue}</p>
-                        <p className="text-base text-gray-600 mb-2">{item.category}</p>
-                        <p className="text-base text-orange-600 font-semibold mb-2">📅 {item.date}</p>
-                        <div className="flex items-center mb-3">
-                          <span className="text-yellow-500 text-xl mr-2">⭐</span>
-                          <span className="text-lg font-bold">{item.rating}</span>
-                        </div>
-                        <p className="text-base text-blue-600 font-semibold mb-3">🎟️ {item.booking}</p>
-                      </>
-                    )}
-                    
+                    {activeTab === 'cravings' && <p className="text-base text-blue-600 font-semibold mb-2">Delivery: {item.delivery}</p>}
+                    {activeTab === 'ootd' && <p className="text-base text-blue-600 font-semibold mb-2">Available on: {item.delivery}</p>}
+                    {activeTab === 'travel' && <p className="text-base text-blue-600 font-semibold mb-2">Booking: {item.booking}</p>}
+                    {activeTab === 'concerts' && <p className="text-base text-blue-600 font-semibold mb-2">Tickets: {item.booking}</p>}
                     <p className="text-3xl font-bold text-green-600 mb-6">₱{item.price.toLocaleString()}</p>
-                    
                     <button 
                       onClick={()=>handleAddCart(item)} 
-                      className="mt-auto py-4 text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-700 hover:to-pink-700 shadow-lg flex items-center justify-center space-x-3 transform hover:scale-105 transition"
+                      className="mt-auto py-4 text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl shadow-lg transform hover:scale-105 transition flex items-center justify-center space-x-3"
                     >
-                      <Icon iconName="ShoppingCart" className="w-6 h-6 text-xl"/> 
-                      <span>Add to Cart (+5 pts)</span>
+                      <Icon iconName="ShoppingCart" /> <span>Add to Cart (+5 pts)</span>
                     </button>
                   </div>
                 ))}
-              </div>
-
-              {/* Cart & Checkout */}
-              {cart.length > 0 && (
-                <div className="mt-12 bg-white p-8 rounded-2xl shadow-2xl space-y-6">
-                  <h3 className="text-4xl font-bold text-gray-800 mb-6">
-                    🛒 Your Cart ({cart.reduce((t,i)=>t+i.quantity,0)} items)
-                  </h3>
-                  {cart.map(item=>(
-                    <div key={item.id} className="flex justify-between items-center border-b-2 border-gray-200 py-4">
-                      <div>
-                        <span className="text-xl font-semibold text-gray-700 block">{item.name}</span>
-                        <span className="text-base text-gray-500">
-                          {activeTab === 'cravings' && `${item.restaurant} • ${item.deliveryTime}`}
-                          {activeTab === 'ootd' && `${item.store} • ${item.availability}`}
-                          {activeTab === 'travel' && `${item.provider} • ${item.duration}`}
-                          {activeTab === 'concerts' && `${item.venue} • ${item.date}`}
-                        </span>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-lg text-purple-600 font-semibold block">× {item.quantity}</span>
-                        <span className="text-2xl font-bold text-green-600">₱{(item.price*item.quantity).toLocaleString()}</span>
-                      </div>
-                    </div>
-                  ))}
-                  <div className="pt-4 border-t-2 border-gray-300">
-                    <div className="flex justify-between items-center mb-6">
-                      <span className="text-2xl font-bold text-gray-800">Total:</span>
-                      <span className="text-4xl font-bold text-green-600">₱{cart.reduce((t,i)=>t+i.price*i.quantity,0).toLocaleString()}</span>
-                    </div>
-                    
-                    <div className="bg-blue-50 border-2 border-blue-300 rounded-xl p-5 mb-4">
-                      <p className="text-lg font-bold text-blue-800 mb-2">📱 Next Steps:</p>
-                      <p className="text-base text-blue-700">
-                        {activeTab === 'cravings' && 'You will be redirected to Grab/Foodpanda to complete your food order.'}
-                        {activeTab === 'ootd' && 'You will be redirected to Lazada/Shopee/Zalora to complete your purchase.'}
-                        {activeTab === 'travel' && 'You will be redirected to Klook/Traveloka/Agoda to book your trip.'}
-                        {activeTab === 'concerts' && 'You will be redirected to TicketNet/SM Tickets to purchase your concert tickets.'}
-                      </p>
-                    </div>
-                    
-                    <input 
-                      type="text" 
-                      placeholder="📍 Enter your location (e.g., Quezon City, BGC, Makati)" 
-                      value={deliveryAddress} 
-                      onChange={e=>setDeliveryAddress(e.target.value)} 
-                      className="w-full p-4 text-lg border-2 border-purple-300 rounded-xl mb-4 focus:ring-4 focus:ring-purple-300 outline-none"
-                    />
-                    <button 
-                      onClick={handleCheckout} 
-                      className="w-full py-5 text-2xl font-bold bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl hover:from-green-600 hover:to-emerald-700 shadow-xl transform hover:scale-105 transition"
-                    >
-                      Proceed to Delivery Partner 🚀 (+50 pts)
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* How It Works Section */}
-              <div className="mt-12 bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl p-8 shadow-xl">
-                <h3 className="text-3xl font-bold text-gray-800 mb-6">How MoodBuy Works 🤔</h3>
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="bg-white rounded-xl p-6 shadow-lg">
-                    <div className="text-4xl mb-3">🧠</div>
-                    <h4 className="text-2xl font-bold text-purple-600 mb-3">AI Mood Analysis</h4>
-                    <p className="text-lg text-gray-700">Our AI acts as both a psychologist and salesman, understanding your emotional state and recommending real products from actual delivery partners that match your psychological needs.</p>
-                  </div>
-                  <div className="bg-white rounded-xl p-6 shadow-lg">
-                    <div className="text-4xl mb-3">🎯</div>
-                    <h4 className="text-2xl font-bold text-purple-600 mb-3">Real-Time Products</h4>
-                    <p className="text-lg text-gray-700">We show you what's actually available right now on Grab, Foodpanda, Lazada, Shopee, Klook, and TicketNet. No fake products - just real items you can order immediately!</p>
-                  </div>
-                  <div className="bg-white rounded-xl p-6 shadow-lg">
-                    <div className="text-4xl mb-3">💭</div>
-                    <h4 className="text-2xl font-bold text-purple-600 mb-3">Emotional Guidance</h4>
-                    <p className="text-lg text-gray-700">Get personalized advice that considers both your emotional wellbeing and practical needs. We help you make choices that truly satisfy both your heart and mind.</p>
-                  </div>
-                  <div className="bg-white rounded-xl p-6 shadow-lg">
-                    <div className="text-4xl mb-3">🚀</div>
-                    <h4 className="text-2xl font-bold text-purple-600 mb-3">Instant Delivery</h4>
-                    <p className="text-lg text-gray-700">We connect you directly to your preferred delivery app. One click and you're ordering from trusted partners with real delivery times and tracking!</p>
-                  </div>
-                </div>
               </div>
             </div>
           </main>
@@ -406,176 +227,4 @@
     root.render(<MoodBuy />);
   </script>
 </body>
-</html>"flex justify-between items-center mb-2">
-                <span className="text-lg">🔥 Streak</span>
-                <span className="text-2xl font-bold">{userStreak} days</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-lg">⭐ Points</span>
-                <span className="text-2xl font-bold">{userPoints}</span>
-              </div>
-            </div>
-
-            <nav className="space-y-4">
-              {[
-                {key: 'cravings', label: '🍜 Cravings', icon: 'Utensils'},
-                {key: 'ootd', label: '👗 OOTD', icon: 'Shirt'},
-                {key: 'travel', label: '✈️ Travel', icon: 'Plane'},
-                {key: 'concerts', label: '🎵 Concerts', icon: 'Music'}
-              ].map(tab => (
-                <button 
-                  key={tab.key} 
-                  onClick={()=>setActiveTab(tab.key)} 
-                  className={`w-full py-4 px-5 rounded-xl text-left text-xl font-semibold hover:bg-white hover:bg-opacity-20 transition transform hover:translate-x-2 ${activeTab===tab.key ? 'bg-white bg-opacity-30 shadow-lg' : ''}`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </nav>
-
-            {/* Cart Preview */}
-            {cart.length > 0 && (
-              <div className="mt-6 bg-green-500 bg-opacity-30 rounded-xl p-4 backdrop-blur-sm">
-                <p className="text-xl font-bold mb-2">🛒 Cart: {cart.reduce((t,i)=>t+i.quantity,0)} items</p>
-                <p className="text-2xl font-bold">₱{cart.reduce((t,i)=>t+i.price*i.quantity,0).toLocaleString()}</p>
-              </div>
-            )}
-          </div>
-
-          {/* Main Content */}
-          <main className="flex-1 p-8 bg-gray-50">
-            <div className="max-w-7xl mx-auto">
-              {/* AI Mood Assistant */}
-              <div className="bg-white rounded-2xl shadow-2xl p-8 mb-8 mood-input-glow">
-                <h2 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-6 flex items-center">
-                  <Icon iconName="Brain" className="mr-3 w-10 h-10 text-3xl" />
-                  AI Mood Assistant - {activeTab === 'cravings' ? 'Food Psychologist 🍜' : 
-                                       activeTab === 'ootd' ? 'Style Therapist 👗' :
-                                       activeTab === 'travel' ? 'Wellness Guide ✈️' :
-                                       'Music Therapist 🎵'}
-                </h2>
-                
-                <div className="mb-6">
-                  <label className="text-xl font-bold text-gray-800 mb-3 block">How are you feeling right now? 💭</label>
-                  <div className="flex space-x-4">
-                    <textarea 
-                      value={moodInput}
-                      onChange={(e) => setMoodInput(e.target.value)}
-                      placeholder="E.g., 'I'm stressed from work' or 'I'm excited for the weekend' or 'Feeling lonely'"
-                      className="flex-1 p-5 text-xl border-2 border-purple-300 rounded-xl focus:ring-4 focus:ring-purple-300 outline-none h-32"
-                    />
-                  </div>
-                  <div className="flex space-x-4 mt-4">
-                    <button 
-                      onClick={() => getAIAdvice(moodInput, activeTab)}
-                      disabled={!moodInput.trim()}
-                      className="flex-1 py-5 text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-700 hover:to-pink-700 shadow-lg transform hover:scale-105 transition flex items-center justify-center space-x-3 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <Icon iconName="Brain" /> <span>Get AI Advice (+10 pts)</span>
-                    </button>
-                    <button 
-                      onClick={startVoiceInput}
-                      disabled={isListening}
-                      className={`py-5 px-8 text-xl font-bold bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 shadow-lg transform hover:scale-105 transition ${isListening ? 'pulse-animation' : ''}`}
-                    >
-                      <Icon iconName="Mic" className={isListening ? 'pulse-animation' : ''} />
-                    </button>
-                  </div>
-                  {isListening && <p className="text-xl text-purple-600 mt-4 font-semibold">🎤 Listening to your feelings...</p>}
-                </div>
-
-                {/* AI Response */}
-                {(isAiTyping || aiAdvice) && (
-                  <div className="ai-message">
-                    {isAiTyping ? (
-                      <div>
-                        <p className="text-xl font-bold mb-3">🧠 AI is analyzing your emotions...</p>
-                        <div className="typing-indicator">
-                          <span></span>
-                          <span></span>
-                          <span></span>
-                        </div>
-                      </div>
-                    ) : (
-                      <div>
-                        <p className="text-xl font-bold mb-3">🧠 Your Personalized Advice:</p>
-                        <p className="text-lg leading-relaxed">{aiAdvice}</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Quick Mood Buttons */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-                  {activeTab === 'cravings' && [
-                    {emoji: '😰', text: 'Stressed', query: 'Im feeling stressed and overwhelmed'},
-                    {emoji: '😊', text: 'Happy', query: 'Im feeling happy and energetic'},
-                    {emoji: '😢', text: 'Sad', query: 'Im feeling sad and down'},
-                    {emoji: '😴', text: 'Tired', query: 'Im feeling exhausted and drained'}
-                  ].map((mood, i) => (
-                    <button
-                      key={i}
-                      onClick={() => { setMoodInput(mood.query); getAIAdvice(mood.query, activeTab); }}
-                      className="bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl p-4 shadow-lg hover:shadow-2xl transform hover:scale-105 transition"
-                    >
-                      <div className="text-4xl mb-2">{mood.emoji}</div>
-                      <div className="text-lg font-bold text-gray-800">{mood.text}</div>
-                    </button>
-                  ))}
-                  {activeTab === 'ootd' && [
-                    {emoji: '😎', text: 'Confident', query: 'Im feeling confident and powerful'},
-                    {emoji: '😰', text: 'Anxious', query: 'Im feeling anxious and nervous'},
-                    {emoji: '🎉', text: 'Excited', query: 'Im feeling excited and energetic'},
-                    {emoji: '😌', text: 'Chill', query: 'Im feeling relaxed and chill'}
-                  ].map((mood, i) => (
-                    <button
-                      key={i}
-                      onClick={() => { setMoodInput(mood.query); getAIAdvice(mood.query, activeTab); }}
-                      className="bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl p-4 shadow-lg hover:shadow-2xl transform hover:scale-105 transition"
-                    >
-                      <div className="text-4xl mb-2">{mood.emoji}</div>
-                      <div className="text-lg font-bold text-gray-800">{mood.text}</div>
-                    </button>
-                  ))}
-                  {activeTab === 'travel' && [
-                    {emoji: '😫', text: 'Stressed', query: 'Im feeling burned out and need escape'},
-                    {emoji: '🤠', text: 'Adventurous', query: 'Im feeling adventurous and want thrills'},
-                    {emoji: '💕', text: 'Romantic', query: 'Im feeling romantic and want scenery'},
-                    {emoji: '😴', text: 'Exhausted', query: 'Im feeling exhausted need rest'}
-                  ].map((mood, i) => (
-                    <button
-                      key={i}
-                      onClick={() => { setMoodInput(mood.query); getAIAdvice(mood.query, activeTab); }}
-                      className="bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl p-4 shadow-lg hover:shadow-2xl transform hover:scale-105 transition"
-                    >
-                      <div className="text-4xl mb-2">{mood.emoji}</div>
-                      <div className="text-lg font-bold text-gray-800">{mood.text}</div>
-                    </button>
-                  ))}
-                  {activeTab === 'concerts' && [
-                    {emoji: '😔', text: 'Lonely', query: 'Im feeling lonely and isolated'},
-                    {emoji: '⚡', text: 'Energetic', query: 'Im feeling energetic and hyped'},
-                    {emoji: '🥺', text: 'Nostalgic', query: 'Im feeling nostalgic and emotional'},
-                    {emoji: '🎉', text: 'Excited', query: 'Im feeling excited and joyful'}
-                  ].map((mood, i) => (
-                    <button
-                      key={i}
-                      onClick={() => { setMoodInput(mood.query); getAIAdvice(mood.query, activeTab); }}
-                      className="bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl p-4 shadow-lg hover:shadow-2xl transform hover:scale-105 transition"
-                    >
-                      <div className="text-4xl mb-2">{mood.emoji}</div>
-                      <div className="text-lg font-bold text-gray-800">{mood.text}</div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Real-time Recommendations */}
-              <h2 className="text-4xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
-                {activeTab === 'cravings' ? '🍜 Available Now on Delivery Apps' : 
-                 activeTab === 'ootd' ? '👗 Available in Stores & Online' :
-                 activeTab === 'travel' ? '✈️ Book Your Next Adventure' :
-                 '🎵 Upcoming Concerts & Events'}
-              </h2>
-
-              <div className
+</html>
