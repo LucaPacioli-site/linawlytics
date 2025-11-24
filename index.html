@@ -3,108 +3,155 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YouthSPEND – Smart Student Budgeting</title>
+  <title>YouthSPEND – Web App</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Roboto', sans-serif; }
-    .hero { background: linear-gradient(to right, #4f46e5, #3b82f6); }
-    .btn-primary {
-      @apply bg-white text-blue-600 font-bold py-3 px-6 rounded hover:bg-gray-100 transition;
-    }
+    .behavior-badge { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-weight: bold; }
   </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 min-h-screen flex flex-col">
 
-  <!-- Hero Section -->
-  <section class="hero text-white py-24 text-center">
-    <h1 class="text-5xl font-bold mb-4">YouthSPEND</h1>
-    <p class="text-xl mb-6">Track Expenses • Improve Budgeting • Boost Financial Awareness</p>
-    <a href="#features" class="btn-primary">Explore Features</a>
-  </section>
+  <!-- Header -->
+  <header class="bg-blue-600 text-white p-6 text-center">
+    <h1 class="text-3xl font-bold">YouthSPEND Web App</h1>
+    <p>Track Expenses • Improve Budgeting • Boost Financial Awareness</p>
+  </header>
 
-  <!-- Features Section -->
-  <section id="features" class="py-20 px-6 md:px-20">
-    <h2 class="text-4xl font-bold text-center mb-12">App Features</h2>
-    <div class="grid md:grid-cols-3 gap-8">
-      <div class="bg-white p-6 rounded shadow hover:shadow-lg transition">
-        <h3 class="text-2xl font-semibold mb-3">Track Expenses</h3>
-        <p>Monitor cash and online payments to see where your money goes.</p>
-      </div>
-      <div class="bg-white p-6 rounded shadow hover:shadow-lg transition">
-        <h3 class="text-2xl font-semibold mb-3">Behavior Detection</h3>
-        <p>Classify your spending as Impulsive, Saver, or Balanced and get advice.</p>
-      </div>
-      <div class="bg-white p-6 rounded shadow hover:shadow-lg transition">
-        <h3 class="text-2xl font-semibold mb-3">Economic Awareness</h3>
-        <p>Understand how the peso’s value and inflation affect your budget.</p>
-      </div>
-      <div class="bg-white p-6 rounded shadow hover:shadow-lg transition">
-        <h3 class="text-2xl font-semibold mb-3">Predictive Alerts</h3>
-        <p>Get notifications to avoid overspending and make smarter choices.</p>
-      </div>
-      <div class="bg-white p-6 rounded shadow hover:shadow-lg transition">
-        <h3 class="text-2xl font-semibold mb-3">Gamification</h3>
-        <p>Earn points, badges, and track progress while building budgeting habits.</p>
-      </div>
-      <div class="bg-white p-6 rounded shadow hover:shadow-lg transition">
-        <h3 class="text-2xl font-semibold mb-3">Analytics Dashboard</h3>
-        <p>Visual charts for cash vs. online spending, savings, and behavior trends.</p>
-      </div>
-    </div>
-  </section>
+  <!-- Main App Section -->
+  <main class="flex-grow container mx-auto p-6">
+    
+    <!-- Budget Input -->
+    <section class="mb-8 bg-white p-6 rounded shadow">
+      <h2 class="text-2xl font-bold mb-4">Set Weekly Budget</h2>
+      <input type="number" id="weeklyBudget" placeholder="Enter your weekly budget (₱)" class="border p-2 rounded w-full mb-2">
+      <button id="setBudgetBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Set Budget</button>
+      <p class="mt-2 text-gray-600">Your weekly budget: ₱<span id="displayBudget">0</span></p>
+    </section>
 
-  <!-- How it Works Section -->
-  <section id="how-it-works" class="py-20 bg-gray-100 px-6 md:px-20">
-    <h2 class="text-4xl font-bold text-center mb-12">How It Works</h2>
-    <div class="grid md:grid-cols-3 gap-8 text-center">
-      <div>
-        <img src="https://via.placeholder.com/100" alt="Step 1" class="mx-auto mb-4 rounded">
-        <h3 class="text-xl font-semibold mb-2">Step 1</h3>
-        <p>Register and link your cash and online transactions.</p>
-      </div>
-      <div>
-        <img src="https://via.placeholder.com/100" alt="Step 2" class="mx-auto mb-4 rounded">
-        <h3 class="text-xl font-semibold mb-2">Step 2</h3>
-        <p>Track, categorize, and monitor your spending habits.</p>
-      </div>
-      <div>
-        <img src="https://via.placeholder.com/100" alt="Step 3" class="mx-auto mb-4 rounded">
-        <h3 class="text-xl font-semibold mb-2">Step 3</h3>
-        <p>Receive personalized alerts and economic insights to improve budgeting.</p>
-      </div>
-    </div>
-  </section>
+    <!-- Add Transaction -->
+    <section class="mb-8 bg-white p-6 rounded shadow">
+      <h2 class="text-2xl font-bold mb-4">Add Transaction</h2>
+      <input type="number" id="amount" placeholder="Amount (₱)" class="border p-2 rounded w-full mb-2">
+      <input type="text" id="category" placeholder="Category (food, transport, school, entertainment, savings)" class="border p-2 rounded w-full mb-2">
+      <select id="paymentMode" class="border p-2 rounded w-full mb-2">
+        <option value="cash">Cash</option>
+        <option value="gcash">GCash</option>
+        <option value="maya">Maya</option>
+        <option value="card">Card</option>
+      </select>
+      <button id="addTransactionBtn" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Add Transaction</button>
+    </section>
 
-  <!-- Screenshots Section -->
-  <section id="screenshots" class="py-20 px-6 md:px-20">
-    <h2 class="text-4xl font-bold text-center mb-12">App Mockups</h2>
-    <div class="grid md:grid-cols-3 gap-8">
-      <img src="https://via.placeholder.com/300x600" alt="App Screenshot" class="mx-auto rounded shadow hover:scale-105 transform transition">
-      <img src="https://via.placeholder.com/300x600" alt="App Screenshot" class="mx-auto rounded shadow hover:scale-105 transform transition">
-      <img src="https://via.placeholder.com/300x600" alt="App Screenshot" class="mx-auto rounded shadow hover:scale-105 transform transition">
-    </div>
-  </section>
+    <!-- Transactions List -->
+    <section class="mb-8 bg-white p-6 rounded shadow">
+      <h2 class="text-2xl font-bold mb-4">Transactions</h2>
+      <ul id="transactionList" class="list-disc pl-5 text-gray-700"></ul>
+    </section>
 
-  <!-- Contact Section -->
-  <section id="contact" class="py-20 bg-blue-600 text-white px-6 md:px-20 text-center">
-    <h2 class="text-4xl font-bold mb-6">Get in Touch</h2>
-    <p class="mb-6">Questions, suggestions, or collaborations? Reach out to us:</p>
-    <a href="mailto:you@example.com" class="btn-primary">Email Us</a>
-  </section>
+    <!-- Summary -->
+    <section class="mb-8 bg-white p-6 rounded shadow">
+      <h2 class="text-2xl font-bold mb-4">Summary</h2>
+      <p>Total Spent: ₱<span id="totalSpent">0</span></p>
+      <p>Remaining Budget: ₱<span id="remainingBudget">0</span></p>
+      <p>Behavior: <span id="behavior" class="behavior-badge">Balanced</span></p>
+      <p id="alertMessage" class="text-red-600 font-bold mt-2"></p>
+    </section>
+
+    <!-- Peso Impact -->
+    <section class="bg-white p-6 rounded shadow">
+      <h2 class="text-2xl font-bold mb-4">Peso Impact</h2>
+      <input type="number" id="cpiCurrent" placeholder="Current CPI" class="border p-2 rounded w-full mb-2">
+      <input type="number" id="cpiPrevious" placeholder="Previous CPI" class="border p-2 rounded w-full mb-2">
+      <button id="calculateImpact" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">Calculate Impact</button>
+      <p class="mt-2 text-gray-700" id="pesoImpactResult"></p>
+    </section>
+
+  </main>
 
   <!-- Footer -->
-  <footer class="bg-gray-800 text-white text-center py-6">
+  <footer class="bg-gray-800 text-white text-center p-4">
     &copy; 2025 YouthSPEND. All rights reserved.
   </footer>
 
-  <!-- Smooth Scroll -->
+  <!-- JavaScript -->
   <script>
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+    let weeklyBudget = 0;
+    let transactions = [];
+
+    // Load from localStorage
+    if(localStorage.getItem('transactions')){
+      transactions = JSON.parse(localStorage.getItem('transactions'));
+    }
+    if(localStorage.getItem('weeklyBudget')){
+      weeklyBudget = parseFloat(localStorage.getItem('weeklyBudget'));
+      document.getElementById('displayBudget').innerText = weeklyBudget;
+    }
+
+    function updateSummary(){
+      const total = transactions.reduce((sum, t) => sum + parseFloat(t.amount), 0);
+      const remaining = weeklyBudget - total;
+      document.getElementById('totalSpent').innerText = total.toFixed(2);
+      document.getElementById('remainingBudget').innerText = remaining.toFixed(2);
+
+      // Behavior Detection
+      let behavior = 'Balanced';
+      const spendingRatio = total / weeklyBudget;
+      if(spendingRatio > 1){
+        behavior = 'Impulsive';
+      } else if(spendingRatio < 0.5){
+        behavior = 'Saver';
+      }
+      document.getElementById('behavior').innerText = behavior;
+
+      // Alerts
+      const alertMessage = spendingRatio > 1 ? '⚠️ You are overspending!' : '';
+      document.getElementById('alertMessage').innerText = alertMessage;
+    }
+
+    function renderTransactions(){
+      const list = document.getElementById('transactionList');
+      list.innerHTML = '';
+      transactions.forEach((t, idx) => {
+        const li = document.createElement('li');
+        li.textContent = `${t.date} - ₱${t.amount} - ${t.category} (${t.paymentMode})`;
+        list.appendChild(li);
       });
+    }
+
+    document.getElementById('setBudgetBtn').addEventListener('click', () => {
+      weeklyBudget = parseFloat(document.getElementById('weeklyBudget').value);
+      localStorage.setItem('weeklyBudget', weeklyBudget);
+      document.getElementById('displayBudget').innerText = weeklyBudget;
+      updateSummary();
+    });
+
+    document.getElementById('addTransactionBtn').addEventListener('click', () => {
+      const amount = parseFloat(document.getElementById('amount').value);
+      const category = document.getElementById('category').value;
+      const paymentMode = document.getElementById('paymentMode').value;
+      const date = new Date().toLocaleDateString();
+      if(!amount || !category) return alert('Please enter amount and category.');
+      const transaction = { amount, category, paymentMode, date };
+      transactions.push(transaction);
+      localStorage.setItem('transactions', JSON.stringify(transactions));
+      renderTransactions();
+      updateSummary();
+      document.getElementById('amount').value = '';
+      document.getElementById('category').value = '';
+    });
+
+    renderTransactions();
+    updateSummary();
+
+    // Peso Impact Calculator
+    document.getElementById('calculateImpact').addEventListener('click', () => {
+      const current = parseFloat(document.getElementById('cpiCurrent').value);
+      const previous = parseFloat(document.getElementById('cpiPrevious').value);
+      if(!current || !previous) return alert('Enter both CPI values.');
+      const impact = ((current - previous) / previous * 100).toFixed(2);
+      document.getElementById('pesoImpactResult').innerText = `This expense is ${impact}% more expensive in real terms than last period.`;
     });
   </script>
 
