@@ -1,159 +1,599 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>YouthSPEND – Web App</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>YouthSPEND — Web App</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Roboto', sans-serif; }
-    .behavior-badge { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-weight: bold; }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>body{font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;}</style>
 </head>
-<body class="bg-gray-50 min-h-screen flex flex-col">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
-  <!-- Header -->
-  <header class="bg-blue-600 text-white p-6 text-center">
-    <h1 class="text-3xl font-bold">YouthSPEND Web App</h1>
-    <p>Track Expenses • Improve Budgeting • Boost Financial Awareness</p>
-  </header>
+<header class="bg-gradient-to-r from-indigo-600 to-sky-500 text-white p-6 shadow">
+  <div class="container mx-auto flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold">YouthSPEND</h1>
+      <p class="text-sm opacity-90">Track expenses • detect behavior • learn peso impact</p>
+    </div>
+    <div class="space-x-2">
+      <button id="tabDashboard" class="tab-btn bg-white/10 px-3 py-1 rounded">Dashboard</button>
+      <button id="tabAdd" class="tab-btn px-3 py-1 rounded">Add</button>
+      <button id="tabCalendar" class="tab-btn px-3 py-1 rounded">Calendar</button>
+      <button id="tabInsights" class="tab-btn px-3 py-1 rounded">Insights</button>
+    </div>
+  </div>
+</header>
 
-  <!-- Main App Section -->
-  <main class="flex-grow container mx-auto p-6">
-    
-    <!-- Budget Input -->
-    <section class="mb-8 bg-white p-6 rounded shadow">
-      <h2 class="text-2xl font-bold mb-4">Set Weekly Budget</h2>
-      <input type="number" id="weeklyBudget" placeholder="Enter your weekly budget (₱)" class="border p-2 rounded w-full mb-2">
-      <button id="setBudgetBtn" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Set Budget</button>
-      <p class="mt-2 text-gray-600">Your weekly budget: ₱<span id="displayBudget">0</span></p>
-    </section>
+<main class="container mx-auto p-6 flex-grow">
 
-    <!-- Add Transaction -->
-    <section class="mb-8 bg-white p-6 rounded shadow">
-      <h2 class="text-2xl font-bold mb-4">Add Transaction</h2>
-      <input type="number" id="amount" placeholder="Amount (₱)" class="border p-2 rounded w-full mb-2">
-      <input type="text" id="category" placeholder="Category (food, transport, school, entertainment, savings)" class="border p-2 rounded w-full mb-2">
-      <select id="paymentMode" class="border p-2 rounded w-full mb-2">
-        <option value="cash">Cash</option>
-        <option value="gcash">GCash</option>
-        <option value="maya">Maya</option>
-        <option value="card">Card</option>
-      </select>
-      <button id="addTransactionBtn" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Add Transaction</button>
-    </section>
+  <!-- DASHBOARD -->
+  <section id="dashboardTab" class="tab-content">
+    <div class="grid md:grid-cols-3 gap-6">
+      <!-- Budget Card -->
+      <div class="bg-white rounded-lg shadow p-5">
+        <h2 class="text-lg font-semibold mb-2">Weekly Budget</h2>
+        <div class="flex items-center gap-2">
+          <input id="weeklyBudget" type="number" placeholder="₱ weekly budget" class="border p-2 rounded w-full" />
+          <button id="setBudgetBtn" class="bg-indigo-600 text-white px-3 py-2 rounded">Set</button>
+        </div>
+        <p class="mt-4 text-sm text-slate-600">Budget: ₱<span id="displayBudget">0.00</span></p>
+        <p class="text-sm text-slate-600">Total Spent: ₱<span id="displaySpent">0.00</span></p>
+        <p class="text-sm text-slate-600">Remaining: ₱<span id="displayRemaining">0.00</span></p>
+        <p class="mt-3">Behavior: <span id="behaviorBadge" class="inline-block px-2 py-1 rounded bg-amber-100 text-amber-800 font-semibold">Balanced</span></p>
+        <p id="alertBox" class="mt-3 text-red-600 font-semibold"></p>
+      </div>
 
-    <!-- Transactions List -->
-    <section class="mb-8 bg-white p-6 rounded shadow">
-      <h2 class="text-2xl font-bold mb-4">Transactions</h2>
-      <ul id="transactionList" class="list-disc pl-5 text-gray-700"></ul>
-    </section>
+      <!-- Quick Add & Stats -->
+      <div class="bg-white rounded-lg shadow p-5">
+        <h2 class="text-lg font-semibold mb-2">Quick Add</h2>
+        <div class="grid grid-cols-1 gap-2">
+          <input id="qAmount" type="number" placeholder="₱ amount" class="border p-2 rounded" />
+          <input id="qCategory" placeholder="Category (food, transport...)" class="border p-2 rounded" />
+          <select id="qMode" class="border p-2 rounded">
+            <option value="cash">Cash</option>
+            <option value="gcash">GCash</option>
+            <option value="maya">Maya</option>
+            <option value="card">Card</option>
+          </select>
+          <button id="qAddBtn" class="bg-emerald-600 text-white py-2 rounded">Add Transaction</button>
+        </div>
 
-    <!-- Summary -->
-    <section class="mb-8 bg-white p-6 rounded shadow">
-      <h2 class="text-2xl font-bold mb-4">Summary</h2>
-      <p>Total Spent: ₱<span id="totalSpent">0</span></p>
-      <p>Remaining Budget: ₱<span id="remainingBudget">0</span></p>
-      <p>Behavior: <span id="behavior" class="behavior-badge">Balanced</span></p>
-      <p id="alertMessage" class="text-red-600 font-bold mt-2"></p>
-    </section>
+        <hr class="my-4" />
+        <h3 class="text-sm font-semibold mb-2">Behavior Score</h3>
+        <div class="w-full bg-slate-100 rounded h-4"><div id="scoreBar" class="h-4 rounded bg-emerald-500" style="width:60%"></div></div>
+        <p class="mt-2 text-sm text-slate-600">Score: <span id="scoreValue">60</span>/100</p>
+      </div>
 
-    <!-- Peso Impact -->
-    <section class="bg-white p-6 rounded shadow">
-      <h2 class="text-2xl font-bold mb-4">Peso Impact</h2>
-      <input type="number" id="cpiCurrent" placeholder="Current CPI" class="border p-2 rounded w-full mb-2">
-      <input type="number" id="cpiPrevious" placeholder="Previous CPI" class="border p-2 rounded w-full mb-2">
-      <button id="calculateImpact" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700">Calculate Impact</button>
-      <p class="mt-2 text-gray-700" id="pesoImpactResult"></p>
-    </section>
+      <!-- Peso & Conversion -->
+      <div class="bg-white rounded-lg shadow p-5">
+        <h2 class="text-lg font-semibold mb-2">Peso ↔ USD & Peso Effect</h2>
+        <input id="rateCurrent" type="number" step="0.01" placeholder="Current PHP → USD (₱ per $)" class="border p-2 rounded mb-2 w-full" />
+        <input id="ratePrevious" type="number" step="0.01" placeholder="Previous rate (₱ per $)" class="border p-2 rounded mb-2 w-full" />
+        <div class="flex gap-2">
+          <input id="amountConvert" type="number" placeholder="₱ amount to convert" class="border p-2 rounded w-full" />
+          <button id="convBtn" class="bg-indigo-600 text-white px-4 rounded">Convert</button>
+        </div>
+        <p class="mt-3 text-sm text-slate-600">Converted: $<span id="usdResult">0.00</span></p>
+        <p class="mt-2 text-sm text-slate-600">Peso effect: <span id="pesoEffect">—</span></p>
+      </div>
+    </div>
 
-  </main>
+    <!-- Graph -->
+    <div class="mt-6 bg-white rounded-lg shadow p-5">
+      <div class="flex justify-between items-center">
+        <h2 class="text-lg font-semibold">Spending Trend (last 14 days)</h2>
+        <div class="text-sm text-slate-500">Graph uses simple linear regression to show trend</div>
+      </div>
+      <canvas id="trendChart" class="mt-4"></canvas>
+    </div>
 
-  <!-- Footer -->
-  <footer class="bg-gray-800 text-white text-center p-4">
-    &copy; 2025 YouthSPEND. All rights reserved.
-  </footer>
+    <!-- Recent Transactions -->
+    <div class="mt-6 bg-white rounded-lg shadow p-5">
+      <h2 class="text-lg font-semibold mb-3">Recent Transactions</h2>
+      <ul id="recentList" class="space-y-2 text-slate-700"></ul>
+    </div>
+  </section>
 
-  <!-- JavaScript -->
-  <script>
-    let weeklyBudget = 0;
-    let transactions = [];
+  <!-- ADD TAB (detail add + CSV import) -->
+  <section id="addTab" class="tab-content hidden">
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="bg-white p-5 rounded-lg shadow">
+        <h2 class="text-lg font-semibold mb-3">Add Transaction (Detailed)</h2>
+        <input id="aAmount" type="number" placeholder="Amount ₱" class="border rounded p-2 w-full mb-2" />
+        <input id="aCategory" placeholder="Category" class="border rounded p-2 w-full mb-2" />
+        <select id="aMode" class="border rounded p-2 w-full mb-2">
+          <option value="cash">Cash</option>
+          <option value="gcash">GCash</option>
+          <option value="maya">Maya</option>
+          <option value="card">Card</option>
+        </select>
+        <input id="aDate" type="date" class="border rounded p-2 w-full mb-2" />
+        <textarea id="aNote" placeholder="Note (optional)" class="border rounded p-2 w-full mb-2"></textarea>
+        <button id="aAddBtn" class="bg-emerald-600 text-white py-2 px-4 rounded">Add Transaction</button>
+      </div>
 
-    // Load from localStorage
-    if(localStorage.getItem('transactions')){
-      transactions = JSON.parse(localStorage.getItem('transactions'));
-    }
-    if(localStorage.getItem('weeklyBudget')){
-      weeklyBudget = parseFloat(localStorage.getItem('weeklyBudget'));
-      document.getElementById('displayBudget').innerText = weeklyBudget;
-    }
+      <div class="bg-white p-5 rounded-lg shadow">
+        <h2 class="text-lg font-semibold mb-3">Import CSV (simple format)</h2>
+        <p class="text-sm text-slate-600 mb-3">CSV columns: date,amount,category,mode,note</p>
+        <input id="csvFile" type="file" accept=".csv" class="mb-3" />
+        <button id="importBtn" class="bg-indigo-600 text-white py-2 px-4 rounded">Import</button>
+        <p id="importMsg" class="mt-3 text-sm text-green-600"></p>
+      </div>
+    </div>
+  </section>
 
-    function updateSummary(){
-      const total = transactions.reduce((sum, t) => sum + parseFloat(t.amount), 0);
-      const remaining = weeklyBudget - total;
-      document.getElementById('totalSpent').innerText = total.toFixed(2);
-      document.getElementById('remainingBudget').innerText = remaining.toFixed(2);
+  <!-- CALENDAR TAB -->
+  <section id="calendarTab" class="tab-content hidden">
+    <div class="bg-white p-4 rounded-lg shadow mb-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-semibold">Expense Calendar</h2>
+        <div>
+          <button id="prevMonth" class="px-3 py-1 bg-slate-100 rounded mr-2">◀</button>
+          <span id="currentMonthLabel" class="font-medium"></span>
+          <button id="nextMonth" class="px-3 py-1 bg-slate-100 rounded ml-2">▶</button>
+        </div>
+      </div>
+    </div>
+    <div id="calendarGrid" class="bg-white p-4 rounded-lg shadow grid grid-cols-7 gap-2"></div>
 
-      // Behavior Detection
-      let behavior = 'Balanced';
-      const spendingRatio = total / weeklyBudget;
-      if(spendingRatio > 1){
-        behavior = 'Impulsive';
-      } else if(spendingRatio < 0.5){
-        behavior = 'Saver';
+    <div id="dayDetails" class="mt-4 bg-white p-4 rounded-lg shadow hidden">
+      <h3 class="font-semibold">Transactions on <span id="dayLabel"></span></h3>
+      <ul id="dayList" class="mt-2 space-y-2 text-slate-700"></ul>
+    </div>
+  </section>
+
+  <!-- INSIGHTS TAB -->
+  <section id="insightsTab" class="tab-content hidden">
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="bg-white p-5 rounded-lg shadow">
+        <h2 class="text-lg font-semibold">Category Breakdown</h2>
+        <canvas id="catChart" class="mt-3"></canvas>
+      </div>
+      <div class="bg-white p-5 rounded-lg shadow">
+        <h2 class="text-lg font-semibold">Cash vs Online</h2>
+        <canvas id="modeChart" class="mt-3"></canvas>
+      </div>
+    </div>
+
+    <div class="mt-6 bg-white p-5 rounded-lg shadow">
+      <h2 class="text-lg font-semibold mb-3">Behavior Explanation</h2>
+      <p class="text-slate-700 mb-2">The behavior score is a weighted index from:</p>
+      <ul class="list-disc ml-6 text-slate-600">
+        <li>Spending velocity (40%) — how quickly budget is used</li>
+        <li>Category balance (30%) — evenness across categories</li>
+        <li>Mode preference (20%) — high online spending lowers score</li>
+        <li>Economic responsiveness (10%) — adapts spending when prices rise</li>
+      </ul>
+      <p class="mt-3 text-sm text-slate-700">Classification: &lt;40 Impulsive • 40–70 Balanced • &gt;70 Saver</p>
+    </div>
+
+  </section>
+
+</main>
+
+<footer class="text-center p-4 text-sm text-slate-500">
+  YouthSPEND • Demo web app • Data stored locally in your browser
+</footer>
+
+<!-- Script: app logic -->
+<script>
+/* -------------------------
+   Storage helpers & init
+   ------------------------- */
+const STORAGE_KEY = 'ysp_transactions_v1';
+const BUDGET_KEY = 'ysp_weekly_budget_v1';
+let transactions = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+let weeklyBudget = parseFloat(localStorage.getItem(BUDGET_KEY) || '0');
+
+function saveState(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
+  localStorage.setItem(BUDGET_KEY, weeklyBudget);
+}
+
+/* -------------------------
+   Tabs
+   ------------------------- */
+const tabs = {
+  dashboard: document.getElementById('dashboardTab'),
+  add: document.getElementById('addTab'),
+  calendar: document.getElementById('calendarTab'),
+  insights: document.getElementById('insightsTab')
+};
+function showTab(name){
+  Object.values(tabs).forEach(t => t.classList.add('hidden'));
+  tabs[name].classList.remove('hidden');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('bg-white/10'));
+  document.getElementById('tab'+capitalize(name)).classList.add('bg-white/10');
+  // refresh visuals if needed
+  if(name==='dashboard') refreshAll();
+  if(name==='calendar') renderCalendarMonth();
+  if(name==='insights') renderInsightsCharts();
+}
+document.getElementById('tabDashboard').onclick = ()=>showTab('dashboard');
+document.getElementById('tabAdd').onclick = ()=>showTab('add');
+document.getElementById('tabCalendar').onclick = ()=>showTab('calendar');
+document.getElementById('tabInsights').onclick = ()=>showTab('insights');
+showTab('dashboard');
+
+function capitalize(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+
+/* -------------------------
+   Add / Quick Add transactions
+   ------------------------- */
+function addTransaction(amount, category, mode, dateStr=null, note=''){
+  const date = dateStr ? dateStr : (new Date()).toISOString().slice(0,10); // yyyy-mm-dd
+  transactions.push({ id: Date.now()+Math.random(), amount: Number(amount), category: (category||'other').toLowerCase(), mode, date, note });
+  saveState(); refreshAll();
+}
+document.getElementById('qAddBtn').onclick = ()=>{
+  const a = Number(document.getElementById('qAmount').value);
+  const c = document.getElementById('qCategory').value || 'other';
+  const m = document.getElementById('qMode').value;
+  if(!a || a<=0){ alert('Enter amount'); return; }
+  addTransaction(a,c,m);
+  document.getElementById('qAmount').value=''; document.getElementById('qCategory').value='';
+};
+
+document.getElementById('aAddBtn').onclick = ()=>{
+  const a = Number(document.getElementById('aAmount').value);
+  const c = document.getElementById('aCategory').value || 'other';
+  const m = document.getElementById('aMode').value;
+  const d = document.getElementById('aDate').value || (new Date()).toISOString().slice(0,10);
+  const n = document.getElementById('aNote').value || '';
+  if(!a || a<=0){ alert('Enter amount'); return; }
+  addTransaction(a,c,m,d,n);
+  document.getElementById('aAmount').value=''; document.getElementById('aCategory').value=''; document.getElementById('aNote').value='';
+};
+
+/* -------------------------
+   CSV Import (simple)
+   ------------------------- */
+document.getElementById('importBtn').onclick = ()=>{
+  const f = document.getElementById('csvFile').files[0];
+  if(!f){ alert('Choose CSV file'); return; }
+  const reader = new FileReader();
+  reader.onload = e=>{
+    const lines = e.target.result.trim().split(/\r?\n/);
+    let count=0;
+    for(const line of lines){
+      const cols = line.split(',');
+      if(cols.length>=4){
+        const [date,amount,category,mode,note=''] = cols;
+        const a = Number(amount);
+        if(!isNaN(a)) { addTransaction(a,category,mode,date,note); count++; }
       }
-      document.getElementById('behavior').innerText = behavior;
-
-      // Alerts
-      const alertMessage = spendingRatio > 1 ? '⚠️ You are overspending!' : '';
-      document.getElementById('alertMessage').innerText = alertMessage;
     }
+    document.getElementById('importMsg').innerText = `Imported ${count} transactions.`;
+  };
+  reader.readAsText(f);
+};
 
-    function renderTransactions(){
-      const list = document.getElementById('transactionList');
-      list.innerHTML = '';
-      transactions.forEach((t, idx) => {
-        const li = document.createElement('li');
-        li.textContent = `${t.date} - ₱${t.amount} - ${t.category} (${t.paymentMode})`;
-        list.appendChild(li);
-      });
-    }
+/* -------------------------
+   Budget set
+   ------------------------- */
+document.getElementById('setBudgetBtn').onclick = ()=>{
+  const v = Number(document.getElementById('weeklyBudget').value || 0);
+  if(v<=0){ alert('Enter positive weekly budget'); return; }
+  weeklyBudget = v; saveState(); refreshAll();
+};
 
-    document.getElementById('setBudgetBtn').addEventListener('click', () => {
-      weeklyBudget = parseFloat(document.getElementById('weeklyBudget').value);
-      localStorage.setItem('weeklyBudget', weeklyBudget);
-      document.getElementById('displayBudget').innerText = weeklyBudget;
-      updateSummary();
-    });
+/* -------------------------
+   Conversion / Peso effect
+   ------------------------- */
+document.getElementById('convBtn').onclick = ()=>{
+  const curr = Number(document.getElementById('rateCurrent').value);
+  const prev = Number(document.getElementById('ratePrevious').value);
+  const amt = Number(document.getElementById('amountConvert').value) || 0;
+  if(!curr || curr<=0){ alert('Enter current rate'); return; }
+  const usd = (amt / curr);
+  document.getElementById('usdResult').innerText = usd.toFixed(2);
+  if(prev && prev>0){
+    const effect = ((curr - prev)/prev)*100; // peso depreciation in %
+    const text = effect>0 ? `Peso weakened by ${effect.toFixed(2)}% vs previous rate` : `Peso strengthened by ${Math.abs(effect).toFixed(2)}% vs previous rate`;
+    document.getElementById('pesoEffect').innerText = text;
+  } else document.getElementById('pesoEffect').innerText = 'Enter previous rate to see effect';
+};
 
-    document.getElementById('addTransactionBtn').addEventListener('click', () => {
-      const amount = parseFloat(document.getElementById('amount').value);
-      const category = document.getElementById('category').value;
-      const paymentMode = document.getElementById('paymentMode').value;
-      const date = new Date().toLocaleDateString();
-      if(!amount || !category) return alert('Please enter amount and category.');
-      const transaction = { amount, category, paymentMode, date };
-      transactions.push(transaction);
-      localStorage.setItem('transactions', JSON.stringify(transactions));
-      renderTransactions();
-      updateSummary();
-      document.getElementById('amount').value = '';
-      document.getElementById('category').value = '';
-    });
+/* -------------------------
+   Utilities: group, sum etc
+   ------------------------- */
+function groupBy(arr, keyFn){
+  return arr.reduce((acc,x)=>{ const k=keyFn(x); (acc[k]||(acc[k]=[])).push(x); return acc; }, {});
+}
 
-    renderTransactions();
-    updateSummary();
+/* -------------------------
+   Summary & behavior detection
+   ------------------------- */
+function computeSummaryAndBehavior(){
+  const totalSpent = transactions.reduce((s,t)=>s + Number(t.amount),0);
+  const remaining = weeklyBudget - totalSpent;
+  // Display
+  document.getElementById('displayBudget').innerText = weeklyBudget.toFixed(2);
+  document.getElementById('displaySpent').innerText = totalSpent.toFixed(2);
+  document.getElementById('displayRemaining').innerText = remaining.toFixed(2);
 
-    // Peso Impact Calculator
-    document.getElementById('calculateImpact').addEventListener('click', () => {
-      const current = parseFloat(document.getElementById('cpiCurrent').value);
-      const previous = parseFloat(document.getElementById('cpiPrevious').value);
-      if(!current || !previous) return alert('Enter both CPI values.');
-      const impact = ((current - previous) / previous * 100).toFixed(2);
-      document.getElementById('pesoImpactResult').innerText = `This expense is ${impact}% more expensive in real terms than last period.`;
-    });
-  </script>
+  // Recent list
+  const recent = transactions.slice().reverse().slice(0,8);
+  const rl = document.getElementById('recentList'); rl.innerHTML='';
+  recent.forEach(t=>{
+    const li = document.createElement('li');
+    li.className='flex justify-between items-center';
+    li.innerHTML = `<div>
+      <div class="font-medium">₱${Number(t.amount).toFixed(2)} • ${capitalize(t.category)}</div>
+      <div class="text-xs text-slate-500">${t.date} • ${t.mode} ${t.note? '• '+t.note : ''}</div>
+    </div>
+    <div class="text-sm text-slate-600">${t.mode}</div>`;
+    rl.appendChild(li);
+  });
 
-</body>
-</html>
+  // Behavior scoring components:
+  // 1) Spending velocity: days to spend 80% of budget in the last 7 days window
+  const last7 = getLastNDaysTransactions(7);
+  let cumulative = 0; let daysTo80 = 7;
+  const target = 0.8 * weeklyBudget;
+  // order by date asc of last7 grouped by date
+  const grouped = groupBy(last7, t=>t.date);
+  const dates = Object.keys(grouped).sort();
+  let reached=false;
+  for(let i=0;i<dates.length;i++){
+    const daySum = grouped[dates[i]].reduce((s,x)=>s + Number(x.amount),0);
+    cumulative += daySum;
+    if(!reached && cumulative >= target){ daysTo80 = i+1; reached=true; break; }
+  }
+  if(!reached && cumulative < target) daysTo80 = 7;
+  const velocityScore = Math.max(0, Math.min(40, (daysTo80/7)*40)); // more days => higher score
+
+  // 2) Category balance: prefer even distribution
+  const catGroups = groupBy(transactions, t=>t.category || 'other');
+  const catTotals = Object.values(catGroups).map(arr => arr.reduce((s,x)=>s+Number(x.amount),0));
+  const total = catTotals.reduce((s,x)=>s+x,0) || 1;
+  // normalized variance
+  const mean = total / catTotals.length;
+  const variance = catTotals.reduce((s,x)=>s + Math.pow(x-mean,2),0)/catTotals.length;
+  const maxVar = Math.pow(total,2); // very rough upper bound
+  const balanceScore = Math.max(0, Math.min(30, (1 - (variance / (variance + mean*mean))) * 30 )); // heuristic
+
+  // 3) Mode preference: more cash -> higher score
+  const onlineTotal = transactions.filter(t=>t.mode !== 'cash').reduce((s,x)=>s + Number(x.amount),0);
+  const modeScore = Math.max(0, Math.min(20, (1 - (onlineTotal / (total || 1)) ) * 20 ));
+
+  // 4) Economic responsiveness: simple heuristic using CPI inputs and month-to-month avg spending
+  let econScore = 5; // neutral default
+  const prevCPI = Number(document.getElementById('ratePrevious').value);
+  const currCPI = Number(document.getElementById('rateCurrent').value);
+  if(prevCPI && currCPI){
+    // compute avg spend this month vs last month
+    const thisMonth = getMonthTransactions(0);
+    const lastMonth = getMonthTransactions(1);
+    const avgThis = (thisMonth.reduce((s,x)=>s+Number(x.amount),0)) / (thisMonth.length || 1);
+    const avgLast = (lastMonth.reduce((s,x)=>s+Number(x.amount),0)) / (lastMonth.length || 1);
+    if(currCPI > prevCPI && avgThis < avgLast) econScore = 10; // they adjusted down when prices rose
+    else econScore = 0;
+  } else econScore = 5;
+
+  const totalScore = Math.round(velocityScore + balanceScore + modeScore + econScore);
+  // Display score & bar
+  document.getElementById('scoreValue').innerText = totalScore;
+  document.getElementById('scoreBar').style.width = `${Math.min(100,totalScore)}%`;
+
+  // Behavior classification
+  const behavior = totalScore < 40 ? 'Impulsive' : (totalScore <= 70 ? 'Balanced' : 'Saver');
+  const badge = document.getElementById('behaviorBadge');
+  badge.innerText = behavior;
+  badge.className = 'inline-block px-2 py-1 rounded font-semibold ' + (behavior==='Impulsive' ? 'bg-red-100 text-red-700' : (behavior==='Balanced' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'));
+
+  // Alert for overspending risk (predictive): daily avg * remaining days > remaining budget
+  const daysLeft = daysLeftInWeek();
+  const dailyAvg = (last7.reduce((s,x)=>s+Number(x.amount),0)) / 7;
+  const risk = (dailyAvg * daysLeft) / Math.max(1, weeklyBudget - (transactions.reduce((s,x)=>s+Number(x.amount),0)));
+  if(risk > 1.2) {
+    document.getElementById('alertBox').innerText = '⚠️ HIGH risk of overspending this week.';
+  } else if(risk > 1.0) {
+    document.getElementById('alertBox').innerText = '⚠️ Moderate risk of overspending.';
+  } else {
+    document.getElementById('alertBox').innerText = '';
+  }
+}
+
+/* -------------------------
+   Chart: trend with regression
+   ------------------------- */
+let trendChart=null;
+function renderTrendChart(){
+  // last 14 days totals
+  const days = getLastNDatesArray(14);
+  const totals = days.map(d => transactions.filter(t=>t.date===d).reduce((s,x)=>s+Number(x.amount),0));
+  // linear regression on index -> totals
+  const n = totals.length;
+  const xs = [...Array(n).keys()];
+  const ys = totals;
+  const {m,b} = linearRegression(xs, ys);
+  const fit = xs.map(x => m*x + b);
+
+  const ctx = document.getElementById('trendChart').getContext('2d');
+  if(trendChart) trendChart.destroy();
+  trendChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: days.map(d=>d.slice(5)), // mm-dd
+      datasets: [
+        { label:'Daily Spend (₱)', data: ys, borderColor:'#ef4444', backgroundColor:'rgba(239,68,68,0.1)', tension:0.2, fill:true, pointRadius:4 },
+        { label:'Trend (regression)', data: fit, borderColor:'#2563eb', borderDash:[6,4], pointRadius:0, fill:false }
+      ]
+    },
+    options: { responsive:true, plugins:{legend:{display:true}}, scales:{y:{beginAtZero:true}} }
+  });
+}
+
+/* -------------------------
+   Insights charts
+   ------------------------- */
+let catChart=null, modeChart=null;
+function renderInsightsCharts(){
+  // categories
+  const catGroups = groupBy(transactions, t=>t.category || 'other');
+  const labels = Object.keys(catGroups);
+  const values = labels.map(k => catGroups[k].reduce((s,x)=>s+Number(x.amount),0));
+  const ctx1 = document.getElementById('catChart').getContext('2d');
+  if(catChart) catChart.destroy();
+  catChart = new Chart(ctx1, { type:'doughnut', data:{labels, datasets:[{data:values, backgroundColor: labels.map(()=>randomColor())}]}, options:{responsive:true} });
+
+  // mode chart
+  const modes = ['cash','gcash','maya','card'];
+  const modeVals = modes.map(m => transactions.filter(t=>t.mode===m).reduce((s,x)=>s+Number(x.amount),0));
+  const ctx2 = document.getElementById('modeChart').getContext('2d');
+  if(modeChart) modeChart.destroy();
+  modeChart = new Chart(ctx2, { type:'pie', data:{labels:modes, datasets:[{data:modeVals, backgroundColor:modes.map(()=>randomColor())}]}, options:{responsive:true} });
+}
+
+/* -------------------------
+   Calendar rendering
+   ------------------------- */
+let calYear = (new Date()).getFullYear();
+let calMonth = (new Date()).getMonth(); // 0-index
+document.getElementById('prevMonth').onclick = ()=>{ calMonth--; if(calMonth<0){calMonth=11; calYear--;} renderCalendarMonth(); };
+document.getElementById('nextMonth').onclick = ()=>{ calMonth++; if(calMonth>11){calMonth=0; calYear++;} renderCalendarMonth(); };
+
+function renderCalendarMonth(){
+  const grid = document.getElementById('calendarGrid'); grid.innerHTML='';
+  const first = new Date(calYear, calMonth, 1);
+  const startDay = first.getDay(); // 0 Sun .. 6 Sat
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+  document.getElementById('currentMonthLabel').innerText = first.toLocaleString('default',{month:'long', year:'numeric'});
+
+  // add blanks
+  for(let i=0;i<startDay;i++){ const blank = document.createElement('div'); blank.className='p-3'; grid.appendChild(blank); }
+  for(let d=1; d<=daysInMonth; d++){
+    const dateKey = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dayTotal = transactions.filter(t=>t.date===dateKey).reduce((s,x)=>s+Number(x.amount),0);
+    const card = document.createElement('div');
+    card.className = 'p-3 rounded border cursor-pointer bg-white hover:shadow';
+    card.innerHTML = `<div class="text-sm font-medium">${d}</div><div class="text-xs text-slate-500 mt-1">₱${dayTotal.toFixed(2)}</div>`;
+    card.onclick = ()=> showDayDetails(dateKey);
+    grid.appendChild(card);
+  }
+}
+
+function showDayDetails(dateKey){
+  const list = transactions.filter(t=>t.date===dateKey);
+  document.getElementById('dayDetails').classList.remove('hidden');
+  document.getElementById('dayLabel').innerText = dateKey;
+  const ul = document.getElementById('dayList'); ul.innerHTML='';
+  if(list.length===0){ ul.innerHTML = '<li class="text-slate-600">No expenses</li>'; return; }
+  list.forEach(t=>{
+    const li = document.createElement('li'); li.className='flex justify-between items-start';
+    li.innerHTML = `<div><div class="font-medium">₱${Number(t.amount).toFixed(2)} • ${capitalize(t.category)}</div><div class="text-xs text-slate-500">${t.note || ''}</div></div><div class="text-xs text-slate-500">${t.mode}</div>`;
+    ul.appendChild(li);
+  });
+}
+
+/* -------------------------
+   Helpers: date windows
+   ------------------------- */
+function getLastNDatesArray(n){
+  const arr=[];
+  for(let i=n-1;i>=0;i--){
+    const d = new Date(); d.setDate(d.getDate()-i);
+    arr.push(d.toISOString().slice(0,10));
+  }
+  return arr;
+}
+function getLastNDaysTransactions(n){
+  const dates = getLastNDatesArray(n);
+  return transactions.filter(t => dates.includes(t.date));
+}
+function getMonthTransactions(offsetMonths){ // offset 0=this month, 1=prev month
+  const d = new Date();
+  d.setMonth(d.getMonth() - offsetMonths);
+  const y = d.getFullYear(), m = d.getMonth();
+  return transactions.filter(t=>{
+    const td = new Date(t.date+'T00:00:00');
+    return td.getFullYear()===y && td.getMonth()===m;
+  });
+}
+
+/* -------------------------
+   Regression util
+   ------------------------- */
+function linearRegression(x,y){
+  const n = x.length;
+  const avgX = x.reduce((s,v)=>s+v,0)/n;
+  const avgY = y.reduce((s,v)=>s+v,0)/n;
+  let num=0, den=0;
+  for(let i=0;i<n;i++){ num += (x[i]-avgX)*(y[i]-avgY); den += (x[i]-avgX)*(x[i]-avgX); }
+  const m = den===0 ? 0 : num/den;
+  const b = avgY - m*avgX;
+  return {m,b};
+}
+
+/* -------------------------
+   Utility functions
+   ------------------------- */
+function randomColor(){ return `hsl(${Math.floor(Math.random()*360)} 70% 60%)`; }
+function daysLeftInWeek(){
+  const d = new Date();
+  const day = d.getDay(); // 0 sun .. 6 sat
+  const remaining = 6 - day; // treat week ending Saturday
+  return Math.max(1, remaining+1);
+}
+
+/* -------------------------
+   Render / refresh
+   ------------------------- */
+function refreshAll(){
+  computeSummaryAndBehavior();
+  renderTrendChart();
+  renderTransactionsList();
+  renderInsightsCharts();
+  renderCalendarMonth();
+}
+function renderTransactionsList(){
+  const ul = document.getElementById('recentList'); // already updated in computeSummary, but ensure overall
+  // also could render full list elsewhere if needed
+}
+
+/* -------------------------
+   Linear regression & initial draw
+   ------------------------- */
+renderTrendChart();
+
+/* -------------------------
+   Recent transactions rendering already handled
+   ------------------------- */
+
+/* -------------------------
+   CSV quick test data (optional)
+   ------------------------- */
+// If no transactions, seed some demo data for better demo experience (only if empty)
+if(transactions.length===0){
+  const demo = [
+    {amount:25, category:'snack', mode:'cash', date: offsetDate(-1), note:'canteen'},
+    {amount:120, category:'load', mode:'gcash', date: offsetDate(-2), note:'load'},
+    {amount:60, category:'transport', mode:'cash', date: offsetDate(-3), note:'jeep'},
+    {amount:200, category:'books', mode:'card', date: offsetDate(-6), note:''},
+    {amount:35, category:'snack', mode:'cash', date: offsetDate(-10), note:''},
+    {amount:150, category:'food', mode:'gcash', date: offsetDate(-12), note:''}
+  ];
+  demo.forEach(d=>transactions.push({...d, id: Date.now()+Math.random()}));
+  saveState();
+}
+if(!weeklyBudget) { weeklyBudget = 1000; saveState(); } // demo value
+refreshAll();
+
+function offsetDate(daysAgo){
+  const d=new Date(); d.setDate(d.getDate() - daysAgo); return d.toISOString().slice(0,10);
+}
+
+/* -------------------------
+   On load behaviors
+   ------------------------- */
+document.addEventListener('DOMContentLoaded', ()=>{ renderTrendChart(); computeSummaryAndBehavior(); });
+
+/* -------------------------
+   small helper: capitalize
+   ------------------------- */
+function capitalize(s){ return s && s[0].toUpperCase() + s.slice(1); }
+
+</script>
